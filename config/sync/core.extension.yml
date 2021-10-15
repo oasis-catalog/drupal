@@ -10,9 +10,12 @@ module:
   breakpoint: 0
   ckeditor: 0
   color: 0
+  color_field: 0
   comment: 0
   commerce: 0
   commerce_cart: 0
+  commerce_cart_api: 0
+  commerce_cart_flyout: 0
   commerce_checkout: 0
   commerce_log: 0
   commerce_number_pattern: 0
@@ -22,11 +25,13 @@ module:
   commerce_price: 0
   commerce_product: 0
   commerce_promotion: 0
+  commerce_shipping: 0
   commerce_store: 0
   commerce_tax: 0
   config: 0
   contact: 0
   contextual: 0
+  ctools: 0
   datetime: 0
   dblog: 0
   devel: 0
@@ -35,6 +40,8 @@ module:
   editor: 0
   entity: 0
   entity_reference_revisions: 0
+  facets: 0
+  facets_pretty_paths: 0
   field: 0
   field_ui: 0
   file: 0
@@ -42,10 +49,12 @@ module:
   help: 0
   history: 0
   image: 0
+  image_delta_formatter: 0
   inline_entity_form: 0
   language: 0
   link: 0
   locale: 0
+  mailsystem: 0
   menu_link_content: 0
   menu_ui: 0
   node: 0
@@ -53,14 +62,22 @@ module:
   page_cache: 0
   path: 0
   path_alias: 0
+  physical: 0
   profile: 0
   quickedit: 0
   rdf: 0
+  rest: 0
   search: 0
+  search_api: 0
+  search_api_db: 0
+  serialization: 0
   shortcut: 0
   state_machine: 0
+  swiftmailer: 0
   system: 0
   taxonomy: 0
+  taxonomy_menu: 0
+  taxonomy_term_depth: 0
   text: 0
   token: 0
   toolbar: 0
@@ -68,6 +85,7 @@ module:
   update: 0
   user: 0
   views_ui: 0
+  pathauto: 1
   views: 10
   standard: 1000
 theme:

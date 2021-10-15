@@ -1,0 +1,15 @@
+uuid: 0de4930e-4884-4883-95a5-0abd86f180de
+langcode: ru
+status: true
+dependencies:
+  enforced:
+    module:
+      - commerce_shipping
+  module:
+    - profile
+_core:
+  default_config_hash: JPUL4eD5T2YoK0l8mg_Ey9_HY9vGRwqr4BM_GqaAgmw
+id: profile.shipping
+label: Доставка
+targetEntityType: profile
+cache: true

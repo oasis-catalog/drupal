@@ -1,0 +1,22 @@
+uuid: 84400fd2-133d-471e-a0c8-341a94379b7c
+langcode: ru
+status: true
+dependencies:
+  module:
+    - commerce_cart_api
+    - serialization
+    - user
+_core:
+  default_config_hash: '-VZFihnbsF6hEpC1DV9RX_b3dI4QQkqGTNiv6qMTbkA'
+id: commerce_cart_coupons
+plugin_id: commerce_cart_coupons
+granularity: resource
+configuration:
+  methods:
+    - GET
+    - PATCH
+    - DELETE
+  formats:
+    - json
+  authentication:
+    - cookie

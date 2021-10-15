@@ -1,0 +1,20 @@
+uuid: 7f557cdd-7ef6-4992-a986-039fb0d70395
+langcode: ru
+status: true
+dependencies:
+  module:
+    - commerce_cart_api
+    - serialization
+    - user
+_core:
+  default_config_hash: cQORBV4olEqxQT9k7Z9gmobi4AUuEahhxC32K8CprOQ
+id: commerce_cart_remove_item
+plugin_id: commerce_cart_remove_item
+granularity: resource
+configuration:
+  methods:
+    - DELETE
+  formats:
+    - json
+  authentication:
+    - cookie

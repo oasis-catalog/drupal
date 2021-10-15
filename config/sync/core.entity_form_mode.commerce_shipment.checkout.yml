@@ -1,0 +1,12 @@
+uuid: e1457da1-96fc-4899-a8ed-123f021cbb89
+langcode: ru
+status: true
+dependencies:
+  module:
+    - commerce_shipping
+_core:
+  default_config_hash: SOM4LMI0fFeahHJLPEPoVldiWGePCGwhTERi0cTjb0U
+id: commerce_shipment.checkout
+label: Checkout
+targetEntityType: commerce_shipment
+cache: true
