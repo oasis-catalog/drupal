@@ -1,0 +1,22 @@
+uuid: 6021f052-c063-4924-80e2-4ef299e1b9c9
+langcode: ru
+status: true
+dependencies: {  }
+id: vat
+label: НДС
+plugin: custom
+configuration:
+  display_label: tax
+  round: false
+  rates:
+    -
+      id: 69b37e7c-eb94-4572-aef2-1f93942df9e4
+      label: НДС
+      percentage: '0.2'
+  territories:
+    -
+      country_code: RU
+      administrative_area: ''
+      locality: null
+      dependent_locality: null
+  display_inclusive: false

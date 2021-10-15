@@ -1,0 +1,57 @@
+uuid: e617512d-f42c-4316-ad6b-af31092bfd52
+langcode: ru
+status: true
+dependencies:
+  config:
+    - commerce_product.commerce_product_variation_type.clothing
+    - core.entity_view_mode.commerce_product_variation.summary
+    - field.field.commerce_product_variation.clothing.attribute_color
+    - field.field.commerce_product_variation.clothing.attribute_size
+    - field.field.commerce_product_variation.clothing.field_images
+    - field.field.commerce_product_variation.clothing.weight
+    - image.style.medium
+  module:
+    - commerce_price
+    - image_delta_formatter
+id: commerce_product_variation.clothing.summary
+targetEntityType: commerce_product_variation
+bundle: clothing
+mode: summary
+content:
+  field_images:
+    weight: 1
+    label: hidden
+    settings:
+      deltas: '0'
+      image_style: medium
+      image_link: ''
+      deltas_reversed: 0
+    third_party_settings: {  }
+    type: image_delta_formatter
+    region: content
+  list_price:
+    label: above
+    type: commerce_price_default
+    weight: 0
+    region: content
+    settings:
+      strip_trailing_zeroes: false
+      currency_display: symbol
+    third_party_settings: {  }
+  title:
+    type: string
+    weight: 2
+    region: content
+    label: hidden
+    settings:
+      link_to_entity: true
+    third_party_settings: {  }
+hidden:
+  attribute_color: true
+  attribute_size: true
+  langcode: true
+  price: true
+  product_id: true
+  search_api_excerpt: true
+  sku: true
+  weight: true

@@ -1,0 +1,10 @@
+uuid: f71357e1-9956-4ea2-953e-04cad6d17210
+langcode: ru
+status: true
+dependencies:
+  module:
+    - commerce_product
+id: commerce_product.catalog
+label: Каталог
+targetEntityType: commerce_product
+cache: true

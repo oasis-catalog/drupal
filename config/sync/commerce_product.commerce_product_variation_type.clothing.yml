@@ -1,0 +1,11 @@
+uuid: 49c4a1fb-0786-4378-b2bd-7f82dbbde980
+langcode: ru
+status: true
+dependencies: {  }
+id: clothing
+label: Одежда
+orderItemType: default
+generateTitle: true
+traits:
+  - purchasable_entity_shippable
+locked: false

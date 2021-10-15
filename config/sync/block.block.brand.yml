@@ -1,0 +1,29 @@
+uuid: 853cf613-4754-45c5-a498-4e85b5dd9ff1
+langcode: ru
+status: true
+dependencies:
+  config:
+    - facets.facet.brand
+  module:
+    - facets
+    - system
+  theme:
+    - bartik
+id: brand
+theme: bartik
+region: content
+weight: -2
+provider: null
+plugin: 'facet_block:brand'
+settings:
+  id: 'facet_block:brand'
+  label: Бренд
+  provider: facets
+  label_display: visible
+  block_id: brand
+visibility:
+  request_path:
+    id: request_path
+    pages: "/products\r\n/products/*"
+    negate: false
+    context_mapping: {  }

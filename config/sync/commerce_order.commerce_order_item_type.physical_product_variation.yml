@@ -1,0 +1,15 @@
+uuid: 2ba0b687-8d22-4f14-afd7-3206e630613d
+langcode: ru
+status: true
+dependencies:
+  module:
+    - commerce_tax
+third_party_settings:
+  commerce_tax:
+    taxable_type: physical_goods
+label: 'Физические (вариант продукта)'
+id: physical_product_variation
+purchasableEntityType: commerce_product_variation
+orderType: physical
+traits: {  }
+locked: false

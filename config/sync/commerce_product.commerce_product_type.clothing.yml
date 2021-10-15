@@ -1,0 +1,12 @@
+uuid: 8292337b-f738-49e6-bc39-4977172add29
+langcode: ru
+status: true
+dependencies: {  }
+id: clothing
+label: Одежда
+description: ''
+variationType: clothing
+multipleVariations: true
+injectVariationFields: true
+traits: {  }
+locked: false

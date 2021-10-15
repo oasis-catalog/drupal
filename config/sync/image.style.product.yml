@@ -1,0 +1,15 @@
+uuid: 40b908f3-530c-4fa5-bff1-96349fd047bd
+langcode: ru
+status: true
+dependencies: {  }
+name: product
+label: 'Product (570×570)'
+effects:
+  1865522e-7841-4cc7-a043-94c056102e28:
+    uuid: 1865522e-7841-4cc7-a043-94c056102e28
+    id: image_scale
+    weight: 1
+    data:
+      width: 570
+      height: 570
+      upscale: false

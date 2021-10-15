@@ -1,0 +1,19 @@
+uuid: 01e1e8ab-4bb7-4e99-920b-dc241529383e
+langcode: ru
+status: true
+dependencies: {  }
+id: cash_on_delivery
+label: 'Оплата при получении'
+weight: null
+plugin: manual
+configuration:
+  instructions:
+    value: ''
+    format: plain_text
+  display_label: 'Оплата при получении'
+  mode: n/a
+  payment_method_types:
+    - credit_card
+  collect_billing_information: true
+conditions: {  }
+conditionOperator: AND

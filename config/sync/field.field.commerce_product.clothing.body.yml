@@ -1,0 +1,23 @@
+uuid: e7e7fc72-0758-4d4e-bd80-e8d6b91302e7
+langcode: ru
+status: true
+dependencies:
+  config:
+    - commerce_product.commerce_product_type.clothing
+    - field.storage.commerce_product.body
+  module:
+    - text
+id: commerce_product.clothing.body
+field_name: body
+entity_type: commerce_product
+bundle: clothing
+label: Содержимое
+description: ''
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings:
+  display_summary: true
+  required_summary: false
+field_type: text_with_summary

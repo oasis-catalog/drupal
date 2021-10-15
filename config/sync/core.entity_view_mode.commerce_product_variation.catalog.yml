@@ -1,0 +1,10 @@
+uuid: ebd49642-8ea8-4ca1-8294-95525e38f4f6
+langcode: ru
+status: true
+dependencies:
+  module:
+    - commerce_product
+id: commerce_product_variation.catalog
+label: Каталог
+targetEntityType: commerce_product_variation
+cache: true

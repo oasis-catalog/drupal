@@ -1,0 +1,7 @@
+uuid: e6ed9be3-e7a8-420a-95d2-f925edc34c79
+langcode: ru
+status: true
+dependencies: {  }
+id: color
+label: Цвет
+elementType: commerce_product_rendered_attribute

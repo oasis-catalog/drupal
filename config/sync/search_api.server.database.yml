@@ -1,0 +1,14 @@
+uuid: 2104699f-e716-44d3-9f47-173609bae944
+langcode: ru
+status: true
+dependencies:
+  module:
+    - search_api_db
+id: database
+name: 'База данных'
+description: ''
+backend: search_api_db
+backend_config:
+  database: 'default:default'
+  min_chars: 1
+  matching: words

@@ -1,0 +1,29 @@
+uuid: ea94f394-a8f8-4cf2-8b44-70dd6f9288bf
+langcode: ru
+status: true
+dependencies:
+  config:
+    - commerce_product.commerce_product_type.clothing
+    - field.storage.commerce_product.field_brand
+    - taxonomy.vocabulary.brands
+id: commerce_product.clothing.field_brand
+field_name: field_brand
+entity_type: commerce_product
+bundle: clothing
+label: Бренд
+description: ''
+required: true
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:taxonomy_term'
+  handler_settings:
+    target_bundles:
+      brands: brands
+    sort:
+      field: name
+      direction: asc
+    auto_create: false
+    auto_create_bundle: ''
+field_type: entity_reference

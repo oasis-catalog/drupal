@@ -1,0 +1,11 @@
+uuid: 5e5a4323-c3ea-4c4c-bd17-221fe0e85cfc
+langcode: ru
+status: true
+dependencies:
+  config:
+    - commerce_product.commerce_product_type.clothing
+id: commerce_product.clothing
+target_entity_type_id: commerce_product
+target_bundle: clothing
+default_langcode: site_default
+language_alterable: false

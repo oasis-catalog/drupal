@@ -614,11 +614,12 @@ display:
   page_1:
     display_plugin: page
     id: page_1
-    display_title: Page
+    display_title: Страница
     position: 1
     display_options:
       display_extenders: {  }
       path: admin/commerce/products
+      display_description: ''
     cache_metadata:
       contexts:
         - 'languages:language_content'

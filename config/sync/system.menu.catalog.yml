@@ -1,0 +1,8 @@
+uuid: 6b983508-a763-4f71-956c-52e380693c33
+langcode: ru
+status: true
+dependencies: {  }
+id: catalog
+label: Каталог
+description: ''
+locked: false
