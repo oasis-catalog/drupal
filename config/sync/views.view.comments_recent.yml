@@ -19,7 +19,7 @@ display:
   default:
     display_plugin: default
     id: default
-    display_title: Основной
+    display_title: Master
     position: 0
     display_options:
       access:
@@ -249,7 +249,7 @@ display:
   block_1:
     display_plugin: block
     id: block_1
-    display_title: Блок
+    display_title: Block
     position: 1
     display_options:
       block_description: 'Последние комментарии'

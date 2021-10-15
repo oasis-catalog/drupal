@@ -1,0 +1,15 @@
+uuid: d2332d9f-cfc9-4046-ba55-e25d8f52bf2a
+langcode: ru
+status: true
+dependencies:
+  enforced:
+    module:
+      - commerce_order
+  module:
+    - profile
+_core:
+  default_config_hash: yeGwCxbA5dBAS_3eBkfaVrbxkASEM357dkjPZShKiR4
+id: profile.billing
+label: Счет
+targetEntityType: profile
+cache: true
