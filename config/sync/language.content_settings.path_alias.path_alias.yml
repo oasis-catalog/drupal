@@ -1,0 +1,13 @@
+uuid: 8a5402c5-71dc-4ac6-a44f-e3441d5abd01
+langcode: ru
+status: true
+dependencies:
+  module:
+    - path_alias
+_core:
+  default_config_hash: dhjFABRzm52DkRXnYja5ZoHwjY0R3gEGic3KpDUXgRo
+id: path_alias.path_alias
+target_entity_type_id: path_alias
+target_bundle: path_alias
+default_langcode: und
+language_alterable: true

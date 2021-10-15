@@ -1,0 +1,10 @@
+uuid: 345b3416-0df8-4d3c-85b0-04109b89d74f
+langcode: ru
+status: true
+dependencies: {  }
+_core:
+  default_config_hash: jxfClwZIRXIdcvMrE--WkcZxDGUVoOIE3Sm2NRZlFuE
+id: html_datetime
+label: 'Дата и время HTML'
+locked: true
+pattern: 'Y-m-d\TH:i:sO'

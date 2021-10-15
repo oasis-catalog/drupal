@@ -1,0 +1,14 @@
+uuid: 8a1e29ac-1ecc-4a8e-91cf-451f18a6af79
+name: 'Тест Oasis Store'
+mail: ever2013@mail.ru
+slogan: ''
+page:
+  403: ''
+  404: ''
+  front: /node
+admin_compact_mode: false
+weight_select_max: 100
+langcode: ru
+default_langcode: ru
+_core:
+  default_config_hash: yTxtFqBHnEWxQswuWvkjE8mKw2t8oKuCL1q8KnfHuGE

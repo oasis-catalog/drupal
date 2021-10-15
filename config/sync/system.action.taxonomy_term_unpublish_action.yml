@@ -1,0 +1,13 @@
+uuid: f23b0e2a-8da8-4568-b3ef-fe40729084ae
+langcode: ru
+status: true
+dependencies:
+  module:
+    - taxonomy
+_core:
+  default_config_hash: z2sNRM3ECa7FPCGnSNje_9SmZJQgwhD_6fG_L4Mr8zI
+id: taxonomy_term_unpublish_action
+label: 'Снять с публикации термин таксономии'
+type: taxonomy_term
+plugin: 'entity:unpublish_action:taxonomy_term'
+configuration: {  }

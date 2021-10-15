@@ -1,0 +1,13 @@
+uuid: d1ab370c-0c1a-4e6a-82f1-bebadd79acf1
+langcode: ru
+status: true
+dependencies:
+  module:
+    - node
+_core:
+  default_config_hash: sOb26JSy3fGpWkvR0WYN6_hMqj_6d1rvbvrkzp1yya0
+id: node_make_sticky_action
+label: 'Закрепить материал вверху списков'
+type: node
+plugin: node_make_sticky_action
+configuration: {  }

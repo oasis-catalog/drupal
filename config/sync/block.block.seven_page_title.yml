@@ -1,0 +1,20 @@
+uuid: 67ab9fef-6467-4317-aecd-85653c11a85e
+langcode: ru
+status: true
+dependencies:
+  theme:
+    - seven
+_core:
+  default_config_hash: ZSpc3IoSaLd0PkB02nxjVPBMztIdsTdHek9SiGaqZ_c
+id: seven_page_title
+theme: seven
+region: header
+weight: -30
+provider: null
+plugin: page_title_block
+settings:
+  id: page_title_block
+  label: 'Заголовок страницы'
+  provider: core
+  label_display: '0'
+visibility: {  }
