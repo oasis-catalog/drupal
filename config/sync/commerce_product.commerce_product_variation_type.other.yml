@@ -1,0 +1,11 @@
+uuid: d72e1fb2-5f80-40bc-a99e-8bdb28c51b23
+langcode: ru
+status: true
+dependencies: {  }
+id: other
+label: Остальные
+orderItemType: physical_product_variation
+generateTitle: true
+traits:
+  - purchasable_entity_shippable
+locked: false

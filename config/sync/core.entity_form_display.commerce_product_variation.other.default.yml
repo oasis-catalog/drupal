@@ -1,20 +1,29 @@
-uuid: a68d2651-0b17-4ff3-8c37-9ce5f24a1d2e
+uuid: 62a95423-e689-440f-8262-c198a5e61e5e
 langcode: ru
 status: true
 dependencies:
   config:
-    - commerce_product.commerce_product_variation_type.default
-    - field.field.commerce_product_variation.default.weight
+    - commerce_product.commerce_product_variation_type.other
+    - field.field.commerce_product_variation.other.field_images
+    - field.field.commerce_product_variation.other.weight
+    - image.style.thumbnail
   module:
     - commerce_price
+    - image
     - physical
-_core:
-  default_config_hash: dDLA40Axom_QFA79EWUpe_bWXWE8I_7MijzPkslbVfA
-id: commerce_product_variation.default.default
+id: commerce_product_variation.other.default
 targetEntityType: commerce_product_variation
-bundle: default
+bundle: other
 mode: default
 content:
+  field_images:
+    weight: 5
+    settings:
+      progress_indicator: throbber
+      preview_image_style: thumbnail
+    third_party_settings: {  }
+    type: image_image
+    region: content
   langcode:
     type: language_select
     weight: 2
@@ -24,34 +33,34 @@ content:
     third_party_settings: {  }
   list_price:
     type: commerce_list_price
-    weight: -1
+    weight: 1
     region: content
     settings: {  }
     third_party_settings: {  }
   price:
     type: commerce_price_default
-    weight: 0
+    weight: 3
+    region: content
     settings: {  }
     third_party_settings: {  }
-    region: content
   sku:
     type: string_textfield
-    weight: -4
+    weight: 0
+    region: content
     settings:
       size: 60
       placeholder: ''
     third_party_settings: {  }
-    region: content
   status:
     type: boolean_checkbox
-    weight: 10
     settings:
       display_label: true
-    third_party_settings: {  }
+    weight: 6
     region: content
+    third_party_settings: {  }
   weight:
     type: physical_measurement_default
-    weight: 91
+    weight: 4
     settings:
       default_unit: ''
       allow_unit_change: true

@@ -1,0 +1,12 @@
+uuid: 5a54d54b-3a8d-4520-b581-82575e1fe0dc
+langcode: ru
+status: true
+dependencies: {  }
+id: other
+label: Остальные
+description: ''
+variationType: other
+multipleVariations: false
+injectVariationFields: true
+traits: {  }
+locked: false

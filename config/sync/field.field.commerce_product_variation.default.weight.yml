@@ -1,0 +1,21 @@
+uuid: 8ecc9abd-1d2f-4038-ab8c-9a9c5696209c
+langcode: ru
+status: true
+dependencies:
+  config:
+    - commerce_product.commerce_product_variation_type.default
+    - field.storage.commerce_product_variation.weight
+  module:
+    - physical
+id: commerce_product_variation.default.weight
+field_name: weight
+entity_type: commerce_product_variation
+bundle: default
+label: Weight
+description: ''
+required: true
+translatable: false
+default_value: {  }
+default_value_callback: null
+settings: {  }
+field_type: physical_measurement
