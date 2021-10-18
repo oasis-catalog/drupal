@@ -25,6 +25,7 @@
         "drupal/commerce_cart_api": "^1.5",
         "drupal/commerce_cart_flyout": "^1.8",
         "drupal/commerce_shipping": "^2.1",
+        "drupal/config_installer": "^1.8",
         "drupal/console": "^1.0.2",
         "drupal/core": "^8.8.0",
         "drupal/core-composer-scaffold": "^8.8.0",
@@ -79,7 +80,7 @@
         ]
     },
     "extra": {
-        "composer-exit-on-patch-failure": true,
+        "composer-exit-on-patch-failure": false,
         "patchLevel": {
             "drupal/core": "-p2"
         },
@@ -95,6 +96,11 @@
             "web/profiles/contrib/{$name}": ["type:drupal-profile"],
             "web/themes/contrib/{$name}": ["type:drupal-theme"],
             "drush/Commands/contrib/{$name}": ["type:drupal-drush"]
+        },
+        "patches": {
+            "drupal/config_installer": {
+                "Memory leak": "https://www.drupal.org/files/issues/2018-08-21/2991182-6.patch"
+            }
         }
     }
 }
