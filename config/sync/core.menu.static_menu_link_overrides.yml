@@ -5,6 +5,24 @@ definitions:
     parent: ''
     weight: 0
     expanded: false
+  'taxonomy_menu__menu_link:taxonomy_menu__menu_link__catalog__5':
+    expanded: false
+    parent: 'admin:'
+    weight: 2
+    menu_name: catalog
+    enabled: true
+  'taxonomy_menu__menu_link:taxonomy_menu__menu_link__catalog__4':
+    expanded: false
+    parent: 'admin:'
+    weight: 8
+    menu_name: catalog
+    enabled: true
+  'taxonomy_menu__menu_link:taxonomy_menu__menu_link__catalog__6':
+    expanded: false
+    parent: 'admin:'
+    weight: 20
+    menu_name: catalog
+    enabled: true
 _core:
   default_config_hash: o4bYR9ZupWb3AsOIizTUG4g-nu1mdJqA59UB7QT-ifQ
 langcode: ru

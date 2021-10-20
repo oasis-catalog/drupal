@@ -1,0 +1,22 @@
+uuid: 4ebfebb1-5974-420b-b886-293a5679513a
+langcode: ru
+status: true
+dependencies:
+  theme:
+    - commerce_bootstrap
+_core:
+  default_config_hash: X9I1OB0W3WlWtrK-CNcg6hNWwa8wficanpH8pYnDZDE
+id: commerce_bootstrap_local_tasks
+theme: commerce_bootstrap
+region: content
+weight: -6
+provider: null
+plugin: local_tasks_block
+settings:
+  id: local_tasks_block
+  label: Вкладки
+  provider: core
+  label_display: '0'
+  primary: true
+  secondary: true
+visibility: {  }

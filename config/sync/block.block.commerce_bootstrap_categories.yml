@@ -1,0 +1,29 @@
+uuid: 0198a49c-38a7-4378-b3fb-4baed9b22bca
+langcode: ru
+status: true
+dependencies:
+  config:
+    - facets.facet.product_categories
+  module:
+    - facets
+    - system
+  theme:
+    - commerce_bootstrap
+id: commerce_bootstrap_categories
+theme: commerce_bootstrap
+region: content
+weight: -1
+provider: null
+plugin: 'facet_block:product_categories'
+settings:
+  id: 'facet_block:product_categories'
+  label: Категории
+  provider: facets
+  label_display: visible
+  block_id: categories
+visibility:
+  request_path:
+    id: request_path
+    pages: "/products\r\n/products/*"
+    negate: false
+    context_mapping: {  }

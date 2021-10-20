@@ -1,0 +1,22 @@
+uuid: 4f1a3184-7e41-405b-aeea-40499b4b4819
+langcode: ru
+status: true
+dependencies:
+  module:
+    - system
+  theme:
+    - commerce_bootstrap
+_core:
+  default_config_hash: KHQIJ7Vfl25lTjzIc7qIvnuistt-Mw2O0kG4jCofmkI
+id: commerce_bootstrap_messages
+theme: commerce_bootstrap
+region: highlighted
+weight: 0
+provider: null
+plugin: system_messages_block
+settings:
+  id: system_messages_block
+  label: 'Системные сообщения'
+  provider: system
+  label_display: '0'
+visibility: {  }

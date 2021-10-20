@@ -6,10 +6,14 @@ dependencies:
     - search_api.index.products
     - views.view.product_catalog
   module:
+    - facets_pretty_paths
     - search_api
+third_party_settings:
+  facets_pretty_paths:
+    coder: taxonomy_term_coder
 id: product_categories
 name: Категории
-url_alias: product_categories
+url_alias: categories
 weight: 0
 min_count: 1
 show_only_one_result: false
@@ -35,10 +39,10 @@ hard_limit: 0
 exclude: false
 only_visible_when_facet_source_is_visible: true
 processor_configs:
-  display_value_widget_order:
-    processor_id: display_value_widget_order
+  term_weight_widget_order:
+    processor_id: term_weight_widget_order
     weights:
-      sort: 40
+      sort: 60
     settings:
       sort: ASC
   translate_entity:

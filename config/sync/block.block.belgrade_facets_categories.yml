@@ -1,0 +1,29 @@
+uuid: 4ee21418-78cc-4253-a950-8b8d16232ffa
+langcode: ru
+status: true
+dependencies:
+  config:
+    - facets.facet.product_categories
+  module:
+    - facets
+    - system
+  theme:
+    - belgrade
+id: belgrade_facets_categories
+theme: belgrade
+region: sidebar_first
+weight: 0
+provider: null
+plugin: 'facet_block:product_categories'
+settings:
+  id: 'facet_block:product_categories'
+  label: Категории
+  provider: facets
+  label_display: visible
+  block_id: belgrade_facets_categories
+visibility:
+  request_path:
+    id: request_path
+    pages: "/products\r\n/products/*"
+    negate: false
+    context_mapping: {  }

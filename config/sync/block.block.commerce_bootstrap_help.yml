@@ -1,0 +1,22 @@
+uuid: 8132d38e-c591-43dd-9618-b0dde3b67a85
+langcode: ru
+status: true
+dependencies:
+  module:
+    - help
+  theme:
+    - commerce_bootstrap
+_core:
+  default_config_hash: 8I8iACSa0sKO3k3jlvUG1ge52rfcKX7USJAQYnzuBgg
+id: commerce_bootstrap_help
+theme: commerce_bootstrap
+region: content
+weight: -5
+provider: null
+plugin: help_block
+settings:
+  id: help_block
+  label: Справка
+  provider: help
+  label_display: '0'
+visibility: {  }

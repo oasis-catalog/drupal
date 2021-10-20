@@ -1,16 +1,16 @@
-uuid: 8ecc9abd-1d2f-4038-ab8c-9a9c5696209c
+uuid: ff21a83d-e80d-4cf7-b7fa-13a8efa6100d
 langcode: ru
 status: true
 dependencies:
   config:
-    - commerce_product.commerce_product_variation_type.default
+    - commerce_product.commerce_product_variation_type.simple
     - field.storage.commerce_product_variation.weight
   module:
     - physical
-id: commerce_product_variation.default.weight
+id: commerce_product_variation.simple.weight
 field_name: weight
 entity_type: commerce_product_variation
-bundle: default
+bundle: simple
 label: Weight
 description: ''
 required: true

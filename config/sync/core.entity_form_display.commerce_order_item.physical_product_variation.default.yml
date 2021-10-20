@@ -1,0 +1,40 @@
+uuid: 88601fa0-b4f5-4fa1-b534-19e30b7c2964
+langcode: ru
+status: true
+dependencies:
+  config:
+    - commerce_order.commerce_order_item_type.physical_product_variation
+  module:
+    - commerce_order
+id: commerce_order_item.physical_product_variation.default
+targetEntityType: commerce_order_item
+bundle: physical_product_variation
+mode: default
+content:
+  purchased_entity:
+    type: entity_reference_autocomplete
+    weight: -1
+    settings:
+      match_operator: CONTAINS
+      match_limit: 10
+      size: 60
+      placeholder: ''
+    region: content
+    third_party_settings: {  }
+  quantity:
+    type: commerce_quantity
+    weight: 1
+    region: content
+    settings:
+      step: '1'
+      placeholder: ''
+    third_party_settings: {  }
+  unit_price:
+    type: commerce_unit_price
+    weight: 2
+    settings:
+      require_confirmation: true
+    region: content
+    third_party_settings: {  }
+hidden:
+  created: true

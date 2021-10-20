@@ -1,0 +1,20 @@
+uuid: 38d82fae-4d8e-462b-a167-4440debc431f
+langcode: ru
+status: true
+dependencies:
+  theme:
+    - commerce_bootstrap
+_core:
+  default_config_hash: 13GQpeITIJsp1kyPniXtWZfyFH87vb1xxJCHifL4UeE
+id: commerce_bootstrap_local_actions
+theme: commerce_bootstrap
+region: content
+weight: -4
+provider: null
+plugin: local_actions_block
+settings:
+  id: local_actions_block
+  label: 'Основные действия администратора'
+  provider: core
+  label_display: '0'
+visibility: {  }

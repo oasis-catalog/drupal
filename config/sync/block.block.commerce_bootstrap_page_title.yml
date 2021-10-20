@@ -1,0 +1,20 @@
+uuid: 70e11af4-6cf9-4a59-aa94-f9cf7f7b50d5
+langcode: ru
+status: true
+dependencies:
+  theme:
+    - commerce_bootstrap
+_core:
+  default_config_hash: 7rR9chwXvdM2H8OYMAYx9Zj3GGlPMrZp_M3ZA4thYTk
+id: commerce_bootstrap_page_title
+theme: commerce_bootstrap
+region: content
+weight: -7
+provider: null
+plugin: page_title_block
+settings:
+  id: page_title_block
+  label: 'Заголовок страницы'
+  provider: core
+  label_display: '0'
+visibility: {  }

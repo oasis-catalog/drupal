@@ -4,7 +4,7 @@ status: true
 dependencies: {  }
 id: clothing
 label: Одежда
-orderItemType: default
+orderItemType: physical_product_variation
 generateTitle: true
 traits:
   - purchasable_entity_shippable

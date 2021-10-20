@@ -73,6 +73,8 @@ display:
             'entity:commerce_product':
               clothing: catalog
               default: default
+              other: catalog
+              simple: catalog
       fields:
         brand_name:
           table: search_api_index_products

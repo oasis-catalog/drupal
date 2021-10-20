@@ -5,11 +5,21 @@ dependencies:
   config:
     - commerce_product.commerce_product_attribute.color
     - field.field.commerce_product_attribute_value.color.field_color
+  module:
+    - color_field
 id: commerce_product_attribute_value.color.default
 targetEntityType: commerce_product_attribute_value
 bundle: color
 mode: default
 content:
+  field_color:
+    type: color_field_widget_default
+    weight: 2
+    region: content
+    settings:
+      placeholder_color: ''
+      placeholder_opacity: ''
+    third_party_settings: {  }
   langcode:
     type: language_select
     weight: 1
@@ -25,5 +35,4 @@ content:
       size: 60
       placeholder: ''
     third_party_settings: {  }
-hidden:
-  field_color: true
+hidden: {  }

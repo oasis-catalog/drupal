@@ -23,7 +23,7 @@ content:
     settings:
       deltas: '0'
       image_style: catalog
-      image_link: ''
+      image_link: content
       deltas_reversed: 0
     third_party_settings: {  }
     type: image_delta_formatter

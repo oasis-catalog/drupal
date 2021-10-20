@@ -1,0 +1,25 @@
+uuid: 4010e15c-132b-4a5e-a678-f63734762da8
+langcode: en
+status: true
+dependencies:
+  module:
+    - system
+  theme:
+    - belgrade
+_core:
+  default_config_hash: ZuTeLM6v6-OKUtrY__rhDL0JEJvahVG2Zdgqbg20E3I
+id: belgrade_branding
+theme: belgrade
+region: header
+weight: -9
+provider: null
+plugin: system_branding_block
+settings:
+  id: system_branding_block
+  label: 'Site branding'
+  provider: system
+  label_display: '0'
+  use_site_logo: true
+  use_site_name: true
+  use_site_slogan: true
+visibility: {  }
