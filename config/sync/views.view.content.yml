@@ -601,7 +601,7 @@ display:
         weight: -10
       display_extenders: {  }
     display_plugin: page
-    display_title: Page
+    display_title: Страница
     id: page_1
     position: 1
     cache_metadata:

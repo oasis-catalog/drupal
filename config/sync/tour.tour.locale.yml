@@ -30,7 +30,7 @@ tips:
   locale-search:
     id: locale-search
     plugin: text
-    label: Поиск
+    label: Search
     body: 'Введите опредёленное слово или предложение, которое необходимо перевести. Можно ввести только часть слова.'
     weight: 3
     attributes:

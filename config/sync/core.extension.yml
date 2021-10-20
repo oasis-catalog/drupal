@@ -26,6 +26,11 @@ module:
   commerce_product: 0
   commerce_promotion: 0
   commerce_shipping: 0
+  commerce_stock: 0
+  commerce_stock_enforcement: 0
+  commerce_stock_field: 0
+  commerce_stock_local: 0
+  commerce_stock_ui: 0
   commerce_store: 0
   commerce_tax: 0
   config: 0

@@ -217,7 +217,7 @@ display:
           relationship: none
           group_type: group
           admin_label: ''
-          label: User
+          label: Пользователь
           exclude: false
           alter:
             alter_text: false

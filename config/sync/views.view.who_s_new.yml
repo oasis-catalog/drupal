@@ -185,7 +185,7 @@ display:
     display_options:
       display_description: 'Список новых пользователей'
       block_description: 'Новые пользователи'
-      block_category: User
+      block_category: Пользователь
       display_extenders: {  }
     cache_metadata:
       contexts:

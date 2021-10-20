@@ -450,7 +450,7 @@ display:
           relationship: uid
           group_type: group
           admin_label: ''
-          label: User
+          label: Пользователь
           exclude: false
           alter:
             alter_text: false
@@ -697,7 +697,7 @@ display:
   page:
     display_plugin: page
     id: page
-    display_title: Page
+    display_title: Страница
     position: 1
     display_options:
       display_extenders: {  }
