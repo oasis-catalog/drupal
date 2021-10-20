@@ -26,6 +26,7 @@
         "drupal/commerce_cart_api": "^1.5",
         "drupal/commerce_cart_flyout": "^1.8",
         "drupal/commerce_shipping": "^2.1",
+        "drupal/commerce_stock": "^1.0@alpha",
         "drupal/config_installer": "^1.8",
         "drupal/console": "^1.0.2",
         "drupal/core": "^8.8.0",
