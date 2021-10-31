@@ -5,11 +5,11 @@ dependencies: {  }
 name: catalog
 label: 'Catalog (370×370)'
 effects:
-  1041bde8-4ea7-405b-ad18-3556d4790105:
-    uuid: 1041bde8-4ea7-405b-ad18-3556d4790105
-    id: image_scale
-    weight: 1
+  e2a98a91-39a9-4da3-8257-81c99fb4936d:
+    uuid: e2a98a91-39a9-4da3-8257-81c99fb4936d
+    id: image_scale_and_crop
+    weight: 2
     data:
       width: 370
       height: 370
-      upscale: false
+      anchor: center-center

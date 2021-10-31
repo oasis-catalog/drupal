@@ -8,6 +8,7 @@ dependencies:
     - field.field.commerce_product_variation.clothing.attribute_color
     - field.field.commerce_product_variation.clothing.attribute_size
     - field.field.commerce_product_variation.clothing.field_images
+    - field.field.commerce_product_variation.clothing.field_stock
     - field.field.commerce_product_variation.clothing.weight
     - image.style.medium
   module:
@@ -49,6 +50,7 @@ content:
 hidden:
   attribute_color: true
   attribute_size: true
+  field_stock: true
   langcode: true
   price: true
   product_id: true

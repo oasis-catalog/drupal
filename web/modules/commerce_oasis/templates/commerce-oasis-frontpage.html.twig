@@ -1,0 +1,18 @@
+<div class="container-fluid">
+  <div class="container">
+    <div class="featured-products">
+      <div class="row">
+        <div class="col-md-12">
+          <h2 class="h1 text-align-center line">{{ 'Products'|t }}</h2>
+        </div>
+      </div>
+      <div class="row">
+        {% for featured_product in featured_products %}
+          <div class="featured-seller col-md-4">
+            {{ render_var(featured_product) }}
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</div>

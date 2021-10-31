@@ -7,12 +7,13 @@ dependencies:
     - field.field.commerce_product_variation.clothing.attribute_color
     - field.field.commerce_product_variation.clothing.attribute_size
     - field.field.commerce_product_variation.clothing.field_images
+    - field.field.commerce_product_variation.clothing.field_stock
     - field.field.commerce_product_variation.clothing.weight
     - image.style.thumbnail
   module:
     - commerce_price
     - image
-    - physical
+    - imce
 id: commerce_product_variation.clothing.default
 targetEntityType: commerce_product_variation
 bundle: clothing
@@ -20,23 +21,39 @@ mode: default
 content:
   attribute_color:
     type: options_select
-    weight: 4
+    weight: 5
     settings: {  }
     third_party_settings: {  }
     region: content
   attribute_size:
     type: options_select
-    weight: 5
+    weight: 6
     settings: {  }
     third_party_settings: {  }
     region: content
+  commerce_stock_always_in_stock:
+    type: boolean_checkbox
+    weight: 5
+    region: content
+    settings:
+      display_label: true
+    third_party_settings: {  }
   field_images:
     weight: 7
     settings:
-      progress_indicator: throbber
       preview_image_style: thumbnail
-    third_party_settings: {  }
+      progress_indicator: throbber
+    third_party_settings:
+      imce:
+        enabled: true
     type: image_image
+    region: content
+  field_stock:
+    weight: 4
+    settings:
+      placeholder: ''
+    third_party_settings: {  }
+    type: number
     region: content
   langcode:
     type: language_select
@@ -72,14 +89,7 @@ content:
     weight: 8
     region: content
     third_party_settings: {  }
-  weight:
-    type: physical_measurement_default
-    weight: 6
-    settings:
-      default_unit: ''
-      allow_unit_change: true
-    third_party_settings: {  }
-    region: content
 hidden:
   created: true
   uid: true
+  weight: true

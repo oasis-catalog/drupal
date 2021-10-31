@@ -5,24 +5,41 @@ dependencies:
   config:
     - commerce_product.commerce_product_variation_type.other
     - field.field.commerce_product_variation.other.field_images
+    - field.field.commerce_product_variation.other.field_stock
     - field.field.commerce_product_variation.other.weight
     - image.style.thumbnail
   module:
     - commerce_price
     - image
-    - physical
+    - imce
 id: commerce_product_variation.other.default
 targetEntityType: commerce_product_variation
 bundle: other
 mode: default
 content:
+  commerce_stock_always_in_stock:
+    type: boolean_checkbox
+    weight: 5
+    region: content
+    settings:
+      display_label: true
+    third_party_settings: {  }
   field_images:
     weight: 5
     settings:
-      progress_indicator: throbber
       preview_image_style: thumbnail
-    third_party_settings: {  }
+      progress_indicator: throbber
+    third_party_settings:
+      imce:
+        enabled: true
     type: image_image
+    region: content
+  field_stock:
+    weight: 4
+    settings:
+      placeholder: ''
+    third_party_settings: {  }
+    type: number
     region: content
   langcode:
     type: language_select
@@ -58,14 +75,7 @@ content:
     weight: 6
     region: content
     third_party_settings: {  }
-  weight:
-    type: physical_measurement_default
-    weight: 4
-    settings:
-      default_unit: ''
-      allow_unit_change: true
-    third_party_settings: {  }
-    region: content
 hidden:
   created: true
   uid: true
+  weight: true

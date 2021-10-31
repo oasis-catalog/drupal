@@ -1,0 +1,20 @@
+uuid: 1292edd5-3480-40b1-8d1e-9f5df8892718
+langcode: ru
+status: true
+dependencies:
+  module:
+    - commerce_product
+id: commerce_product_variation.field_stock
+field_name: field_stock
+entity_type: commerce_product_variation
+type: decimal
+settings:
+  precision: 10
+  scale: 0
+module: core
+locked: false
+cardinality: 1
+translatable: true
+indexes: {  }
+persist_with_no_fields: false
+custom_storage: false

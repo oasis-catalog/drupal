@@ -6,6 +6,7 @@ dependencies:
     - commerce_product.commerce_product_variation_type.other
     - core.entity_view_mode.commerce_product_variation.catalog
     - field.field.commerce_product_variation.other.field_images
+    - field.field.commerce_product_variation.other.field_stock
     - field.field.commerce_product_variation.other.weight
     - image.style.catalog
   module:
@@ -48,6 +49,7 @@ content:
       adjustment_types: {  }
     third_party_settings: {  }
 hidden:
+  field_stock: true
   langcode: true
   product_id: true
   search_api_excerpt: true

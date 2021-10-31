@@ -10,18 +10,20 @@ dependencies:
   module:
     - commerce_price
     - image
-    - physical
+    - imce
 id: commerce_product_variation.simple.default
 targetEntityType: commerce_product_variation
 bundle: simple
 mode: default
 content:
   field_images:
-    weight: 5
+    weight: 4
     settings:
-      progress_indicator: throbber
       preview_image_style: thumbnail
-    third_party_settings: {  }
+      progress_indicator: throbber
+    third_party_settings:
+      imce:
+        enabled: true
     type: image_image
     region: content
   langcode:
@@ -55,17 +57,10 @@ content:
     type: boolean_checkbox
     settings:
       display_label: true
-    weight: 6
+    weight: 5
     region: content
     third_party_settings: {  }
-  weight:
-    type: physical_measurement_default
-    weight: 4
-    settings:
-      default_unit: ''
-      allow_unit_change: true
-    third_party_settings: {  }
-    region: content
 hidden:
   created: true
   uid: true
+  weight: true

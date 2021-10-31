@@ -23,5 +23,5 @@ visibility:
   request_path:
     id: request_path
     pages: "/checkout\r\n/checkout/*"
-    negate: false
+    negate: true
     context_mapping: {  }

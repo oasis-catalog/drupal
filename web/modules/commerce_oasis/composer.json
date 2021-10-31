@@ -1,0 +1,30 @@
+{
+    "name": "oasis-catalog/drupal",
+    "type": "drupal-module",
+    "description": "Import product module for Drupal Commerce.",
+    "homepage": "https://github.com/oasis-catalog/drupal",
+    "license": "GPL-2.0+",
+    "require": {
+        "drupal/color_field": "^2.0",
+        "drupal/commerce": "^2.16",
+        "drupal/commerce_cart_api": "^1.0",
+        "drupal/commerce_cart_flyout": "^1.0",
+        "drupal/commerce_shipping": "^2.0",
+        "drupal/commerce_simple_stock": "^1.1",
+		"drupal/belgrade": "^1.0",
+        "drupal/facets": "^1.0",
+        "drupal/facets_pretty_paths": "^1.0",
+        "drupal/image_delta_formatter": "^1.0",
+        "drupal/imce": "^2.4",
+        "drupal/pathauto": "^1.0",
+        "drupal/physical": "^1.1",
+        "drupal/search_api": "^1.9",
+        "drupal/search_api_db": "^1.20",
+        "drupal/taxonomy_menu": "3.x-dev#8.x-3.5",
+        "drupal/taxonomy_term_depth": "2.x-dev",
+		"drupal/admin_toolbar": "^2.0",
+		"drupal/swiftmailer": "^2.0",
+		"drupal/token": "^1.0"
+    },
+    "minimum-stability": "dev"
+}

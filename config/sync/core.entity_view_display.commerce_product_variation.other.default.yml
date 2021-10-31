@@ -5,6 +5,7 @@ dependencies:
   config:
     - commerce_product.commerce_product_variation_type.other
     - field.field.commerce_product_variation.other.field_images
+    - field.field.commerce_product_variation.other.field_stock
     - field.field.commerce_product_variation.other.weight
     - image.style.product
   module:
@@ -25,6 +26,17 @@ content:
     third_party_settings: {  }
     type: image
     region: content
+  field_stock:
+    weight: 4
+    label: inline
+    settings:
+      thousand_separator: ''
+      decimal_separator: .
+      scale: 0
+      prefix_suffix: false
+    third_party_settings: {  }
+    type: number_decimal
+    region: content
   list_price:
     label: above
     type: commerce_price_default
@@ -37,7 +49,7 @@ content:
   price:
     label: hidden
     type: commerce_price_calculated
-    weight: 2
+    weight: 3
     region: content
     settings:
       strip_trailing_zeroes: false

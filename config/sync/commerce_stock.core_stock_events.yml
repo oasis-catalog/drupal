@@ -1,6 +1,0 @@
-core_stock_events_order_complete: true
-core_stock_events_order_cancel: false
-core_stock_events_order_updates: false
-_core:
-  default_config_hash: FL-WkgniPypCWECCor6zBuzt_R81-G5zUqW3G2rHNsU
-langcode: ru

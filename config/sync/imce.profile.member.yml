@@ -1,0 +1,26 @@
+uuid: 252f510e-9aea-43b1-b205-467a370d6033
+langcode: ru
+status: true
+dependencies: {  }
+_core:
+  default_config_hash: uLGxn83zQtCm36z5Tk6rnhKO2Bm0fafIrI8T9BAqVUs
+id: member
+label: 'Профиль участника'
+description: 'Конфигурация для участников сайта'
+conf:
+  extensions: 'jpg png gif'
+  maxsize: !!float 2
+  quota: !!float 50
+  maxwidth: 1024
+  maxheight: 1024
+  replace: 0
+  thumbnail_style: ''
+  thumbnail_grid_style: false
+  ignore_usage: false
+  folders:
+    -
+      path: 'users/user[user:uid]'
+      permissions:
+        browse_files: true
+        upload_files: true
+        delete_files: true

@@ -1,0 +1,14 @@
+commerce_oasis.settings:
+  path: '/admin/commerce/config/oasis'
+  defaults:
+    _form: '\Drupal\commerce_oasis\Form\OasisSettingsForm'
+    _title: 'Настройки импорта товаров'
+  requirements:
+    _permission: 'administer site configuration'
+commerce_oasis.frontpage:
+  path: '/frontpage'
+  defaults:
+    _controller: '\Drupal\commerce_oasis\Controller\Frontpage::view'
+    _title: 'Home'
+  requirements:
+    _access: 'TRUE'

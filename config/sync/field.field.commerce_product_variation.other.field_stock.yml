@@ -1,0 +1,23 @@
+uuid: 02a43dd1-0ac1-408b-88ea-0452b98fa74a
+langcode: ru
+status: true
+dependencies:
+  config:
+    - commerce_product.commerce_product_variation_type.other
+    - field.storage.commerce_product_variation.field_stock
+id: commerce_product_variation.other.field_stock
+field_name: field_stock
+entity_type: commerce_product_variation
+bundle: other
+label: 'На складе'
+description: ''
+required: true
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  min: !!float 0
+  max: null
+  prefix: ''
+  suffix: ''
+field_type: decimal

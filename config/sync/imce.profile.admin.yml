@@ -1,0 +1,24 @@
+uuid: 3a706ebf-b1f3-471d-bfa2-8d85a58149d8
+langcode: ru
+status: true
+dependencies: {  }
+_core:
+  default_config_hash: Yr2l9kFlT4Sa8875bhBZ0jy7QkYNxCKbx60FqGxELAg
+id: admin
+label: 'Профиль администратора'
+description: 'Конфигурация для администраторов сайта'
+conf:
+  extensions: '*'
+  maxsize: !!float 0
+  quota: !!float 0
+  maxwidth: 0
+  maxheight: 0
+  replace: 0
+  thumbnail_style: ''
+  thumbnail_grid_style: false
+  ignore_usage: false
+  folders:
+    -
+      path: .
+      permissions:
+        all: true

@@ -1,0 +1,13 @@
+services:
+  commerce_oasis.product_breadcrumb_builder:
+    class: Drupal\commerce_oasis\ProductBreadcrumbBuilder
+    arguments: ['@pathauto.alias_cleaner', '@entity_type.manager', '@router.route_provider']
+    tags:
+      - { name: breadcrumb_builder, priority: 1100 }
+
+  commerce_oasis.catalog_breadcrumb_builder:
+    class: Drupal\commerce_oasis\CatalogBreadcrumbBuilder
+    arguments: ['@request_stack', '@title_resolver', '@entity_type.manager']
+    tags:
+      # facets_pretty_path is set to 1500.
+      - { name: breadcrumb_builder, priority: 1501 }
