@@ -21,6 +21,15 @@ function commerce_oasis_theme() {
 }
 
 /**
+ * @file
+ *
+ * hook_page_attachments()
+ */
+function commerce_oasis_page_attachments(array &$page) {
+  $page['#attached']['library'][] = 'commerce_oasis/commerce.belgrade';
+}
+
+/**
  * Implements hook_menu_links_discovered_alter().
  *
  * Workaround for taxonomy_menu not supporting custom paths. See #2865894.
