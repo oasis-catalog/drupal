@@ -48,6 +48,7 @@ class Frontpage extends ControllerBase {
 
     $product_storage = $this->entityTypeManager->getStorage('commerce_product');
     $product_ids = $product_storage->getQuery()
+      ->condition('status', true)
       ->range(0, 6)
       ->sort('changed', 'DESC')
       ->execute();
