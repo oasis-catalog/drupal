@@ -1,0 +1,4 @@
+commerce.belgrade:
+  css:
+    theme:
+      css/custom.belgrade.css: { }

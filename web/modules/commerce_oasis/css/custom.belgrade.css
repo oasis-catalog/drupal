@@ -1,0 +1,7 @@
+.view-content {
+  display: flex;
+  flex-wrap: wrap;
+}
+.view-content > .views-row {
+  display: flex;
+}
