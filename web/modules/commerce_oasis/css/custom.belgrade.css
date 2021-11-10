@@ -9,3 +9,8 @@
 #block-belgrade-facets-categories-content .facets-widget- ul {
   padding-left: 0.1em;
 }
+
+.form-item-purchased-entity-attributes-attribute-color_radio label.option {
+  font-size: 15px;
+  line-height: 22px;
+}
