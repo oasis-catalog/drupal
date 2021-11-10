@@ -1,0 +1,19 @@
+uuid: 7004c623-4e4e-402e-bac3-740aeca7262a
+langcode: ru
+status: true
+dependencies:
+  config:
+    - commerce_product.commerce_product_variation_type.storage
+    - field.storage.commerce_product_variation.field_id_oasis
+id: commerce_product_variation.storage.field_id_oasis
+field_name: field_id_oasis
+entity_type: commerce_product_variation
+bundle: storage
+label: 'Id Oasis'
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string

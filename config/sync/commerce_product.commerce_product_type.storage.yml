@@ -1,0 +1,12 @@
+uuid: 3fb34513-fbe2-49bb-b736-4c85da2caa02
+langcode: ru
+status: true
+dependencies: {  }
+id: storage
+label: Накопители
+description: ''
+variationType: storage
+multipleVariations: true
+injectVariationFields: true
+traits: {  }
+locked: false

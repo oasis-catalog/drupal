@@ -1,0 +1,7 @@
+uuid: 2ec7ee61-ecbd-48b5-88e8-c7ecdf20794d
+langcode: ru
+status: true
+dependencies: {  }
+id: volume
+label: Объем
+elementType: radios

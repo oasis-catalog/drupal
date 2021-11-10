@@ -1,0 +1,12 @@
+uuid: 2b406a71-a92f-47fe-943a-9240f58a5f79
+langcode: ru
+status: true
+dependencies: {  }
+id: color
+label: Цветные
+description: ''
+variationType: color
+multipleVariations: true
+injectVariationFields: true
+traits: {  }
+locked: false

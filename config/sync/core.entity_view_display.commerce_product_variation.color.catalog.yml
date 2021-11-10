@@ -1,0 +1,64 @@
+uuid: 16c52ad1-2a21-4829-94a0-abe37d78240b
+langcode: ru
+status: true
+dependencies:
+  config:
+    - commerce_product.commerce_product_variation_type.color
+    - core.entity_view_mode.commerce_product_variation.catalog
+    - field.field.commerce_product_variation.color.attribute_color_radio
+    - field.field.commerce_product_variation.color.field_body
+    - field.field.commerce_product_variation.color.field_id_oasis
+    - field.field.commerce_product_variation.color.field_images
+    - field.field.commerce_product_variation.color.field_stock
+    - field.field.commerce_product_variation.color.weight
+    - image.style.catalog
+  module:
+    - commerce_order
+    - commerce_price
+    - image_delta_formatter
+id: commerce_product_variation.color.catalog
+targetEntityType: commerce_product_variation
+bundle: color
+mode: catalog
+content:
+  field_images:
+    weight: 1
+    label: hidden
+    settings:
+      deltas: '0'
+      image_style: catalog
+      image_link: content
+      deltas_reversed: 0
+    third_party_settings: {  }
+    type: image_delta_formatter
+    region: content
+  list_price:
+    label: above
+    type: commerce_price_default
+    weight: 0
+    region: content
+    settings:
+      strip_trailing_zeroes: false
+      currency_display: symbol
+    third_party_settings: {  }
+  price:
+    label: hidden
+    type: commerce_price_calculated
+    weight: 2
+    region: content
+    settings:
+      strip_trailing_zeroes: false
+      currency_display: symbol
+      adjustment_types: {  }
+    third_party_settings: {  }
+hidden:
+  attribute_color_radio: true
+  field_body: true
+  field_id_oasis: true
+  field_stock: true
+  langcode: true
+  product_id: true
+  search_api_excerpt: true
+  sku: true
+  title: true
+  weight: true

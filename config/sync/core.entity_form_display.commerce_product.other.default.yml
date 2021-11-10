@@ -4,43 +4,39 @@ status: true
 dependencies:
   config:
     - commerce_product.commerce_product_type.other
-    - field.field.commerce_product.other.body
     - field.field.commerce_product.other.field_brand
+    - field.field.commerce_product.other.field_group_id_oasis
     - field.field.commerce_product.other.field_product_categories
   module:
     - commerce
-    - commerce_product
     - path
-    - text
 id: commerce_product.other.default
 targetEntityType: commerce_product
 bundle: other
 mode: default
 content:
-  body:
-    type: text_textarea_with_summary
-    weight: 3
-    settings:
-      rows: 9
-      summary_rows: 3
-      placeholder: ''
-      show_summary: false
-    third_party_settings: {  }
-    region: content
   created:
     type: datetime_timestamp
-    weight: 6
+    weight: 4
     region: content
     settings: {  }
     third_party_settings: {  }
   field_brand:
-    weight: 8
+    weight: 6
     settings: {  }
     third_party_settings: {  }
     type: options_select
     region: content
+  field_group_id_oasis:
+    weight: 8
+    settings:
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+    type: string_textfield
+    region: content
   field_product_categories:
-    weight: 9
+    weight: 7
     settings: {  }
     third_party_settings: {  }
     type: options_select
@@ -54,7 +50,7 @@ content:
     third_party_settings: {  }
   path:
     type: path
-    weight: 7
+    weight: 5
     region: content
     settings: {  }
     third_party_settings: {  }
@@ -62,7 +58,7 @@ content:
     type: boolean_checkbox
     settings:
       display_label: true
-    weight: 10
+    weight: 9
     region: content
     third_party_settings: {  }
   stores:
@@ -85,7 +81,7 @@ content:
     third_party_settings: {  }
   uid:
     type: entity_reference_autocomplete
-    weight: 5
+    weight: 3
     region: content
     settings:
       match_operator: CONTAINS
@@ -93,10 +89,5 @@ content:
       size: 60
       placeholder: ''
     third_party_settings: {  }
-  variations:
-    type: commerce_product_single_variation
-    weight: 4
-    settings: {  }
-    third_party_settings: {  }
-    region: content
-hidden: {  }
+hidden:
+  variations: true

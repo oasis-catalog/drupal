@@ -6,6 +6,8 @@ dependencies:
     - commerce_product.commerce_product_variation_type.clothing
     - field.field.commerce_product_variation.clothing.attribute_color
     - field.field.commerce_product_variation.clothing.attribute_size
+    - field.field.commerce_product_variation.clothing.field_body
+    - field.field.commerce_product_variation.clothing.field_id_oasis
     - field.field.commerce_product_variation.clothing.field_images
     - field.field.commerce_product_variation.clothing.field_stock
     - field.field.commerce_product_variation.clothing.weight
@@ -14,6 +16,7 @@ dependencies:
     - commerce_price
     - image
     - imce
+    - text
 id: commerce_product_variation.clothing.default
 targetEntityType: commerce_product_variation
 bundle: clothing
@@ -21,13 +24,13 @@ mode: default
 content:
   attribute_color:
     type: options_select
-    weight: 5
+    weight: 6
     settings: {  }
     third_party_settings: {  }
     region: content
   attribute_size:
     type: options_select
-    weight: 6
+    weight: 7
     settings: {  }
     third_party_settings: {  }
     region: content
@@ -38,8 +41,26 @@ content:
     settings:
       display_label: true
     third_party_settings: {  }
+  field_body:
+    weight: 1
+    settings:
+      rows: 9
+      summary_rows: 3
+      placeholder: ''
+      show_summary: false
+    third_party_settings: {  }
+    type: text_textarea_with_summary
+    region: content
+  field_id_oasis:
+    weight: 9
+    settings:
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+    type: string_textfield
+    region: content
   field_images:
-    weight: 7
+    weight: 8
     settings:
       preview_image_style: thumbnail
       progress_indicator: throbber
@@ -49,7 +70,7 @@ content:
     type: image_image
     region: content
   field_stock:
-    weight: 4
+    weight: 5
     settings:
       placeholder: ''
     third_party_settings: {  }
@@ -57,20 +78,20 @@ content:
     region: content
   langcode:
     type: language_select
-    weight: 2
+    weight: 3
     region: content
     settings:
       include_locked: true
     third_party_settings: {  }
   list_price:
     type: commerce_list_price
-    weight: 1
+    weight: 2
     region: content
     settings: {  }
     third_party_settings: {  }
   price:
     type: commerce_price_default
-    weight: 3
+    weight: 4
     region: content
     settings: {  }
     third_party_settings: {  }
@@ -86,7 +107,7 @@ content:
     type: boolean_checkbox
     settings:
       display_label: true
-    weight: 8
+    weight: 10
     region: content
     third_party_settings: {  }
 hidden:

@@ -1,0 +1,11 @@
+uuid: fbb9648a-17a6-474e-8211-dd22cc240175
+langcode: ru
+status: true
+dependencies: {  }
+id: storage
+label: Накопители
+orderItemType: physical_product_variation
+generateTitle: true
+traits:
+  - purchasable_entity_shippable
+locked: false

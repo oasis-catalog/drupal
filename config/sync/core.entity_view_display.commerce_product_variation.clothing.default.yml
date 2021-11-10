@@ -6,6 +6,8 @@ dependencies:
     - commerce_product.commerce_product_variation_type.clothing
     - field.field.commerce_product_variation.clothing.attribute_color
     - field.field.commerce_product_variation.clothing.attribute_size
+    - field.field.commerce_product_variation.clothing.field_body
+    - field.field.commerce_product_variation.clothing.field_id_oasis
     - field.field.commerce_product_variation.clothing.field_images
     - field.field.commerce_product_variation.clothing.field_stock
     - field.field.commerce_product_variation.clothing.weight
@@ -14,11 +16,19 @@ dependencies:
     - commerce_order
     - commerce_price
     - image
+    - text
 id: commerce_product_variation.clothing.default
 targetEntityType: commerce_product_variation
 bundle: clothing
 mode: default
 content:
+  field_body:
+    weight: 2
+    label: hidden
+    settings: {  }
+    third_party_settings: {  }
+    type: text_default
+    region: content
   field_images:
     weight: 1
     label: hidden
@@ -66,6 +76,7 @@ content:
 hidden:
   attribute_color: true
   attribute_size: true
+  field_id_oasis: true
   langcode: true
   product_id: true
   search_api_excerpt: true

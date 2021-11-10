@@ -5,3 +5,7 @@
 .view-content > .views-row {
   display: flex;
 }
+
+#block-belgrade-facets-categories-content .facets-widget- ul {
+  padding-left: 0.1em;
+}

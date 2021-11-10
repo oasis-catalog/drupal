@@ -5,8 +5,8 @@ dependencies:
   config:
     - commerce_product.commerce_product_type.other
     - core.entity_view_mode.commerce_product.catalog
-    - field.field.commerce_product.other.body
     - field.field.commerce_product.other.field_brand
+    - field.field.commerce_product.other.field_group_id_oasis
     - field.field.commerce_product.other.field_product_categories
 id: commerce_product.other.catalog
 targetEntityType: commerce_product
@@ -22,9 +22,9 @@ content:
       link_to_entity: true
     third_party_settings: {  }
 hidden:
-  body: true
   created: true
   field_brand: true
+  field_group_id_oasis: true
   field_product_categories: true
   langcode: true
   search_api_excerpt: true

@@ -1,0 +1,19 @@
+uuid: 9f58f9d6-8a3f-44fb-bcd4-46d40ca4d5d0
+langcode: ru
+status: true
+dependencies:
+  config:
+    - field.storage.taxonomy_term.field_id_oasis
+    - taxonomy.vocabulary.product_categories
+id: taxonomy_term.product_categories.field_id_oasis
+field_name: field_id_oasis
+entity_type: taxonomy_term
+bundle: product_categories
+label: 'Id Oasis'
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string

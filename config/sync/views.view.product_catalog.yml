@@ -45,21 +45,21 @@ display:
       pager:
         type: mini
         options:
-          items_per_page: 25
+          items_per_page: 27
           offset: 0
           id: 0
           total_pages: null
+          tags:
+            previous: ‹‹
+            next: ››
           expose:
-            items_per_page: false
-            items_per_page_label: 'Items per page'
-            items_per_page_options: '5, 10, 25, 50'
+            items_per_page: true
+            items_per_page_label: 'Элементов на страницу'
+            items_per_page_options: '6, 12, 27, 54'
             items_per_page_options_all: false
             items_per_page_options_all_label: '- All -'
             offset: false
             offset_label: Offset
-          tags:
-            previous: ‹‹
-            next: ››
       style:
         type: default
         options:
@@ -72,9 +72,10 @@ display:
           view_modes:
             'entity:commerce_product':
               clothing: catalog
+              color: catalog
               default: default
               other: catalog
-              simple: catalog
+              storage: catalog
       fields:
         brand_name:
           table: search_api_index_products

@@ -4,24 +4,16 @@ status: true
 dependencies:
   config:
     - commerce_product.commerce_product_type.other
-    - field.field.commerce_product.other.body
     - field.field.commerce_product.other.field_brand
+    - field.field.commerce_product.other.field_group_id_oasis
     - field.field.commerce_product.other.field_product_categories
   module:
     - commerce_cart_flyout
-    - text
 id: commerce_product.other.default
 targetEntityType: commerce_product
 bundle: other
 mode: default
 content:
-  body:
-    label: hidden
-    type: text_default
-    weight: 2
-    settings: {  }
-    third_party_settings: {  }
-    region: content
   field_brand:
     weight: 1
     label: hidden
@@ -31,7 +23,7 @@ content:
     type: entity_reference_label
     region: content
   field_product_categories:
-    weight: 4
+    weight: 3
     label: hidden
     settings:
       link: false
@@ -48,13 +40,14 @@ content:
     third_party_settings: {  }
   variations:
     type: commerce_cart_flyout_add_to_cart
-    weight: 3
+    weight: 2
     region: content
     label: hidden
     settings: {  }
     third_party_settings: {  }
 hidden:
   created: true
+  field_group_id_oasis: true
   langcode: true
   search_api_excerpt: true
   stores: true

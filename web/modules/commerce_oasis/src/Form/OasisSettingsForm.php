@@ -2,17 +2,9 @@
 
 namespace Drupal\commerce_oasis\Form;
 
-use Drupal\commerce_price\Price;
-use Drupal\commerce_product\Entity\Product;
-use Drupal\commerce_product\Entity\ProductVariation;
 use Drupal\Core\Form\ConfigFormBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\commerce_oasis\Controller\CommerceOasis;
-use Drupal\field\Entity\FieldConfig;
-use Drupal\file\Entity\File;
-use Drupal\Core\Field\FieldItemBase;
-use Drupal\Core\Field\FieldStorageDefinitionInterface;
-
 
 class OasisSettingsForm extends ConfigFormBase {
 
@@ -64,7 +56,7 @@ class OasisSettingsForm extends ConfigFormBase {
 
         $form['oasis_categories'] = [
           '#type' => 'checkboxes',
-          '#options' => CommerceOasis::getOasisCategories(),
+          '#options' => CommerceOasis::getOasisMainCategories(),
           '#title' => $this->t('Категории'),
           '#default_value' => $config->get('oasis_categories') ? array_values($config->get('oasis_categories')) : [],
         ];
@@ -95,7 +87,7 @@ class OasisSettingsForm extends ConfigFormBase {
 
         $form['oasis_rating'] = [
           '#type' => 'select',
-          '#title' => $this->t('Категории'),
+          '#title' => $this->t('Тип'),
           '#options' => [
             1 => $this->t('Только новинки'),
             2 => $this->t('Только хиты'),
@@ -143,58 +135,19 @@ class OasisSettingsForm extends ConfigFormBase {
     return parent::buildForm($form, $form_state);
   }
 
-  public function importRun(array &$form, FormStateInterface &$form_state) {
-    $brandName = 'Dior';
-    $brandId = CommerceOasis::getBrand('brands', $brandName);
+  /**
+   * @throws \Drupal\Core\Entity\EntityStorageException
+   * @throws \Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException
+   * @throws \Drupal\Component\Plugin\Exception\PluginNotFoundException
+   */
+  public function importRun() {
+    $oasis = new CommerceOasis;
+    $oasis->doExecute();
 
-    //    $full_categories = 'Dior';
-    //    $categories = CommerceOasis::getCategories('product_categories', $brandName);
-
-    //    $fid = 42;
-    //    $file_storage = \Drupal::entityTypeManager()->getStorage('file');
-    //    $file = $file_storage->loadMultiple();
-    //
-    //
-    //    kint($file);
-    //    exit();
-
-    // Add images
-    //    $images = File::create([
-    //      'uri' => 'public://product-images/image.jpg',
-    //      'filename' => 'image.jpg',
-    //      'status' => FILE_STATUS_PERMANENT,
-    //      'created' => time(),
-    //      'changed' => time(),
-    //    ]);
-    //    $images->save();
-
-    $product_id = '';
-    $image = File::load(7);
-    $variation = ProductVariation::create([
-      'type' => 'other',
-      'sku' => 'test-other-product-01',
-      'status' => TRUE,
-      'price' => new Price('124.99', 'RUB'),
-      'field_images' => $image,
-      'field_stock' => [1],
-    ]);
-    $variation->save();
-
-    $product = Product::create([
-      'type' => 'other',
-      'title' => 'My Custom Product 1',
-      'body' => 'sadf asdfasdf asdfasdf asdfsadf asfasdf asdf ',
-      'stores' => [1],
-      'variations' => $variation,
-      'field_brand' => [$brandId],
-      'field_product_categories' => [4, 7],
-    ]);
-    $product->save();
-
-    $product_id = $variation->getProduct()->id();
+    $msg = 'Variation added id = ';
 
     $this->messenger()
-      ->addMessage($this->t('Product added id = ' . $product_id));
+      ->addMessage($this->t($msg));
   }
 
   /**

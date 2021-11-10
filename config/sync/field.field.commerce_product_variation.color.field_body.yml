@@ -1,0 +1,23 @@
+uuid: d0023942-292f-4140-8011-8f92fed6fd4a
+langcode: ru
+status: true
+dependencies:
+  config:
+    - commerce_product.commerce_product_variation_type.color
+    - field.storage.commerce_product_variation.field_body
+  module:
+    - text
+id: commerce_product_variation.color.field_body
+field_name: field_body
+entity_type: commerce_product_variation
+bundle: color
+label: Содержимое
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  display_summary: false
+  required_summary: false
+field_type: text_with_summary

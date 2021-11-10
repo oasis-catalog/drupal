@@ -7,6 +7,8 @@ dependencies:
     - core.entity_view_mode.commerce_product_variation.catalog
     - field.field.commerce_product_variation.clothing.attribute_color
     - field.field.commerce_product_variation.clothing.attribute_size
+    - field.field.commerce_product_variation.clothing.field_body
+    - field.field.commerce_product_variation.clothing.field_id_oasis
     - field.field.commerce_product_variation.clothing.field_images
     - field.field.commerce_product_variation.clothing.field_stock
     - field.field.commerce_product_variation.clothing.weight
@@ -53,6 +55,8 @@ content:
 hidden:
   attribute_color: true
   attribute_size: true
+  field_body: true
+  field_id_oasis: true
   field_stock: true
   langcode: true
   product_id: true

@@ -1,0 +1,19 @@
+uuid: 18e4c0dc-703a-4d6b-b8da-16468c3689b0
+langcode: ru
+status: true
+dependencies:
+  config:
+    - commerce_product.commerce_product_type.storage
+    - field.storage.commerce_product.field_group_id_oasis
+id: commerce_product.storage.field_group_id_oasis
+field_name: field_group_id_oasis
+entity_type: commerce_product
+bundle: storage
+label: 'Group Id Oasis'
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string

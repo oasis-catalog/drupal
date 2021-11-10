@@ -6,7 +6,13 @@
 
 namespace Drupal\commerce_oasis\Controller;
 
+use Drupal\commerce_price\Price;
+use Drupal\commerce_product\Entity\Product;
+use Drupal\commerce_product\Entity\ProductAttribute;
+use Drupal\commerce_product\Entity\ProductAttributeValue;
+use Drupal\commerce_product\Entity\ProductVariation;
 use Drupal\Core\Controller\ControllerBase;
+use Drupal\Core\Field\FieldItemInterface;
 use Drupal\taxonomy\Entity\Term;
 use Drupal\taxonomy\Entity\Vocabulary;
 
@@ -16,66 +22,569 @@ use Drupal\taxonomy\Entity\Vocabulary;
 class CommerceOasis extends ControllerBase {
 
   /**
-   * Получение термина производителя, создание при отсутсвии
+   * The config module Oasis.
+   */
+  private $config = NULL;
+
+  /**
+   * Categories oasis
    *
-   * @param $vid
-   * @param $name
+   * @var null
+   */
+  private $categories = NULL;
+
+  /**
+   * Products oasis
    *
-   * @return \Drupal\Core\Entity\EntityBase|\Drupal\Core\Entity\EntityInterface|\Drupal\taxonomy\Entity\Term
+   * @var null
+   */
+  private $products = NULL;
+
+  /**
+   * Default Store Id
+   *
+   * @var integer
+   */
+  private $defaultStore;
+
+  /**
+   * Constructs.
+   */
+  public function __construct() {
+    $this->config = $this->config('commerce_oasis.settings');
+
+    $store = \Drupal::entityTypeManager()
+      ->getStorage('commerce_store')
+      ->loadByProperties(['is_default' => 1]);
+
+    $this->defaultStore = [array_key_first($store)];
+  }
+
+  /**
+   * Builds the response.
+   */
+  public function build() {
+
+    $build['content'] = [
+      '#theme' => 'oasis_settings',
+    ];
+
+    return $build;
+  }
+
+  /**
    * @throws \Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException
    * @throws \Drupal\Component\Plugin\Exception\PluginNotFoundException
    * @throws \Drupal\Core\Entity\EntityStorageException
    */
-  public static function getBrand($vid, $name) {
-    $terms = \Drupal::entityTypeManager()
-      ->getStorage('taxonomy_term')
-      ->loadTree($vid);
+  public function doExecute() {
+    set_time_limit(0);
+    ini_set('memory_limit', '3G');
 
-    foreach ($terms as $term) {
-      if ($term->name === $name) {
-        return $term->tid;
+    try {
+      $this->categories = CommerceOasis::getOasisCategories();
+      $this->products = $this->getOasisProducts();
+
+      \Drupal::logger('commerce_oasis')->notice('Start import');
+
+      $allProduct = count($this->products);
+      $i = 0;
+      $start_time = microtime(TRUE);
+      foreach ($this->products as $product) {
+        $start_time_product = microtime(TRUE);
+        $productId = $this->import($product);
+        $end_time_product = microtime(TRUE);
+
+        $i++;
+        \Drupal::logger('commerce_oasis')
+          ->notice($i . '/' . $allProduct . ' Время: ' . number_format(($end_time_product - $start_time_product), 4, '.', '') . ' сек. Id=' . $productId . ' Article=' . $product->article);
       }
+      $end_time = microtime(TRUE);
+      \Drupal::logger('commerce_oasis')
+        ->notice('End import. ' . 'Общее время обработки: ' . number_format(($end_time - $start_time), 4, '.', ''));
+    } catch (Exception $e) {
     }
-
-    $term = Term::create([
-      // Required fields
-      'vid' => CommerceOasis::getVocabulary($vid),
-      'name' => $name,
-      // Optional fields
-      'status' => 1,
-      'description' => [
-        'value' => '',
-        'format' => 'full_html',
-      ],
-      'changed' => time(),
-    ]);
-    $term->save();
-
-    return $term->id();
   }
 
-  public static function getCategories($vid, $name) {
-    $terms = \Drupal::entityTypeManager()
-      ->getStorage('taxonomy_term')
-      ->loadTree($vid);
+  /**
+   * @param $product
+   *
+   * @return int|mixed|string|null
+   * @throws \Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException
+   * @throws \Drupal\Component\Plugin\Exception\PluginNotFoundException
+   * @throws \Drupal\Core\Entity\EntityStorageException
+   */
+  public function import($product) {
+    if (!is_null($product->parent_size_id)) {
+      $result = $this->checkProduct($product, 'clothing');
+    } elseif (!is_null($product->parent_color_id)) {
+      $result = $this->checkProduct($product, 'color');
+    } else {
+      $result = $this->checkProduct($product, 'other');
+    }
 
-    foreach ($terms as $term) {
-      if ($term->name === $name) {
-        return $term->tid;
+    return $result ? $result->id() : '';
+  }
+
+  /**
+   * @param $product
+   * @param string $type
+   *
+   * @return \Drupal\commerce_product\Entity\Product|\Drupal\Core\Entity\EntityBase|\Drupal\Core\Entity\EntityInterface|false|mixed
+   * @throws \Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException
+   * @throws \Drupal\Component\Plugin\Exception\PluginNotFoundException
+   * @throws \Drupal\Core\Entity\EntityStorageException
+   */
+  public function checkProduct($product, string $type = 'other') {
+    $variation = \Drupal::entityTypeManager()
+      ->getStorage('commerce_product_variation')
+      ->loadBySku($product->article);
+    $cProduct = \Drupal::entityTypeManager()
+      ->getStorage('commerce_product')
+      ->loadByProperties([
+        'title' => $product->name,
+        'field_group_id_oasis' => $product->group_id,
+      ]);
+    $cProduct = reset($cProduct);
+
+    if (is_null($variation)) {
+      $colorRadioId = NULL;
+      $variation = $this->addVariation($product, $cProduct, $type, $colorRadioId);
+      if ($cProduct) {
+        if ($type === 'color') {
+          $cVariationInProduct = \Drupal::entityTypeManager()
+            ->getStorage('commerce_product_variation')
+            ->getQuery()
+            ->condition('product_id', $cProduct->id())
+            ->condition('attribute_color_radio', $colorRadioId)
+            ->execute();
+          if ($cVariationInProduct) {
+            $cProduct = $this->addProduct($product, $variation, $type);
+          } else {
+            $this->editProduct($variation, $cProduct);
+          }
+        } else {
+          $this->editProduct($variation, $cProduct);
+        }
+      } else {
+        $cProduct = $this->addProduct($product, $variation, $type);
+      }
+    } else {
+      if (is_null($variation->getProduct())) {
+        $variation->delete();
+
+      } else {
+        $this->editVariation($variation, $product, $type);
+      }
+    }
+
+    if ($cProduct) {
+      $hasEnableVariation = \Drupal::entityTypeManager()
+        ->getStorage('commerce_product_variation')
+        ->getQuery()
+        ->condition('product_id', $cProduct->id())
+        ->condition('status', TRUE)
+        ->execute();
+
+      if (!$hasEnableVariation) {
+        $cProduct->set('status', FALSE)->save();
+      }
+    }
+
+    return $cProduct;
+  }
+
+  /**
+   * @param $product
+   * @param $cProduct
+   * @param $type
+   *
+   * @return \Drupal\commerce_product\Entity\ProductVariation|\Drupal\Core\Entity\EntityBase|\Drupal\Core\Entity\EntityInterface
+   * @throws \Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException
+   * @throws \Drupal\Component\Plugin\Exception\PluginNotFoundException
+   * @throws \Drupal\Core\Entity\EntityStorageException
+   */
+  public function addVariation($product, $cProduct, $type, &$colorRadioId = NULL) {
+    $attr = [
+      'type' => $type,
+      'sku' => $product->article,
+      'price' => new Price($product->price, 'RUB'),
+      'field_body' => $product->description,
+      'field_id_oasis' => [$product->id],
+      'status' => $this->getStatusAndStock($product)['status'],
+      'field_stock' => $this->getStatusAndStock($product)['field_stock'],
+    ];
+
+    $attribute_name = 'attribute_color';
+
+    if ($type === 'clothing') {
+      $attr['attribute_size'] = CommerceOasis::getAttribute($product->size, 'size');
+      foreach ($product->attributes as $attribute) {
+        if (isset($attribute->id) && $attribute->id === 1000000001) {
+          $attributeColor = explode('/', str_replace(',', '/', $attribute->value));
+          foreach ($attributeColor as $attributeColorItem) {
+            $needed = CommerceOasis::getHexColor(trim($attributeColorItem));
+            if ($needed) {
+              $color = [
+                'name' => trim($attributeColorItem),
+                'value' => $needed,
+              ];
+              break;
+            }
+          }
+          unset($attributeColorItem, $needed);
+        }
+      }
+      unset($attribute);
+
+      if (isset($color)) {
+        $attr[$attribute_name] = $this->getAttributeColor($color, $type);
+      } else {
+        foreach ($product->colors as $colorItem) {
+          $needed = CommerceOasis::parentColor($colorItem->parent_id);
+          if ($needed) {
+            $color = [
+              'name' => trim($colorItem->name),
+              'value' => CommerceOasis::parentColor($colorItem->parent_id),
+            ];
+            $attr[$attribute_name] = $this->getAttributeColor($color, $type);
+            break;
+          }
+        }
+      }
+    } elseif ($type === 'color') {
+      $attribute_name = 'attribute_color_radio';
+      foreach ($product->attributes as $attribute) {
+        if (isset($attribute->id) && $attribute->id === 1000000001) {
+          $color = [
+            'name' => trim($attribute->value),
+          ];
+        }
+      }
+      unset($attribute);
+      if (isset($color)) {
+        $attr[$attribute_name] = $this->getAttributeColor($color, $type);
+
+        $colorRadioId = reset($attr[$attribute_name]);
+      }
+    }
+
+    if ($cProduct && isset($attr[$attribute_name])) {
+      $cVariation = current(\Drupal::entityTypeManager()
+        ->getStorage('commerce_product_variation')
+        ->loadByProperties([
+          'product_id' => $cProduct->id(),
+          $attribute_name => reset($attr[$attribute_name]),
+        ]));
+
+      if ($cVariation) {
+        $attr['field_images'] = array_map(function (FieldItemInterface $item) {
+          return $item->target_id;
+        }, iterator_to_array($cVariation->get('field_images')));
+      } else {
+        $attr['field_images'] = CommerceOasis::getImages($product->images);
+      }
+    } else {
+      $attr['field_images'] = CommerceOasis::getImages($product->images);
+    }
+
+    $variation = ProductVariation::create($attr);
+    $variation->save();
+
+    return $variation;
+  }
+
+  /**
+   * @param $variation
+   * @param $product
+   * @param $type
+   *
+   * @throws \Drupal\Core\Entity\EntityStorageException
+   */
+  public function editVariation($variation, $product, $type) {
+    $productVariation = ProductVariation::load($variation->id());
+    $productVariation->setPrice(new Price($product->price, 'RUB'));
+    $productVariation->set('field_body', $product->description);
+    $productVariation->set('status', $this->getStatusAndStock($product)['status']);
+    $productVariation->set('field_stock', $this->getStatusAndStock($product)['field_stock']);
+    $productVariation->save();
+  }
+
+  /**
+   * @param $product
+   *
+   * @return array
+   */
+  public function getStatusAndStock($product): array {
+    if ($product->rating === 5) {
+      $data['status'] = TRUE;
+      $data['field_stock'] = [99999];
+    } elseif (!is_null($product->total_stock)) {
+      $data['status'] = TRUE;
+      $data['field_stock'] = [$product->total_stock];
+    } else {
+      $data['status'] = FALSE;
+      $data['field_stock'] = [0];
+    }
+
+    return $data;
+  }
+
+  /**
+   * @param $product
+   * @param $variation
+   * @param $type
+   *
+   * @return \Drupal\commerce_product\Entity\Product|\Drupal\Core\Entity\EntityBase|\Drupal\Core\Entity\EntityInterface
+   * @throws \Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException
+   * @throws \Drupal\Component\Plugin\Exception\PluginNotFoundException
+   * @throws \Drupal\Core\Entity\EntityStorageException
+   */
+  public function addProduct($product, $variation, $type) {
+    $product = Product::create([
+      'type' => $type,
+      'title' => $product->name,
+      'stores' => $this->defaultStore,
+      'variations' => $variation,
+      'field_brand' => is_null($product->brand) ? '' : CommerceOasis::getBrand($product->brand),
+      'field_product_categories' => CommerceOasis::getCategories($product->full_categories, $this->categories),
+      'field_group_id_oasis' => $product->group_id,
+    ]);
+    $product->save();
+
+    return $product;
+  }
+
+  /**
+   * @param $variation
+   * @param $product
+   */
+  public function editProduct($variation, $product) {
+    $product->addVariation($variation)->save();
+  }
+
+  /**
+   * @param $data
+   * @param string $type
+   *
+   * @return array
+   * @throws \Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException
+   * @throws \Drupal\Component\Plugin\Exception\PluginNotFoundException
+   * @throws \Drupal\Core\Entity\EntityStorageException
+   */
+  public function getAttributeColor($data, string $type = 'other'): array {
+    $productAttributeId = \Drupal::entityTypeManager()
+      ->getStorage('commerce_product_attribute_value')
+      ->loadByProperties(['name' => $data['name']]);
+
+    if (!$productAttributeId) {
+      $attr = [
+        'name' => $data['name'],
+      ];
+
+      if ($type === 'clothing') {
+        $attr['attribute'] = 'color';
+        $attr['field_color'] = $data['value'];
+      } elseif ($type === 'color') {
+        $attr['attribute'] = 'color_radio';
+      }
+
+      $attribute = ProductAttributeValue::create($attr);
+      $attribute->save();
+      return [$attribute->id()];
+    }
+
+    return [array_key_first($productAttributeId)];
+  }
+
+  /**
+   * @param string $value
+   * @param string $attributeType
+   *
+   * @return array
+   * @throws \Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException
+   * @throws \Drupal\Component\Plugin\Exception\PluginNotFoundException
+   * @throws \Drupal\Core\Entity\EntityStorageException
+   */
+  public static function getAttribute(string $value, string $attributeType): array {
+    $productAttributeId = \Drupal::entityTypeManager()
+      ->getStorage('commerce_product_attribute_value')
+      ->loadByProperties(['name' => $value]);
+
+    if (!$productAttributeId) {
+      $attribute = ProductAttributeValue::create([
+        'attribute' => $attributeType,
+        'name' => $value,
+      ]);
+      $attribute->save();
+      $result = [$attribute->id()];
+    } else {
+      $result = [array_key_first($productAttributeId)];
+    }
+
+    return $result;
+  }
+
+  /**
+   * Download images, return ids
+   *
+   * @param $images
+   *
+   * @return array
+   * @throws \Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException
+   * @throws \Drupal\Component\Plugin\Exception\PluginNotFoundException
+   */
+  public static function getImages($images): array {
+    $result = [];
+
+    if (is_array($images)) {
+      $default_scheme = \Drupal::config('system.file')->get('default_scheme');
+
+      foreach ($images as $itemImage) {
+        if (isset($itemImage->superbig)) {
+          $basename = basename($itemImage->superbig);
+
+          $img = \Drupal::entityTypeManager()
+            ->getStorage('file')
+            ->loadByProperties(['filename' => $basename]);
+
+          if ($img) {
+            $result[] = array_key_first($img);
+          } else {
+            $pic = file_get_contents($itemImage->superbig, TRUE, stream_context_create([
+              'http' => [
+                'ignore_errors' => TRUE,
+                'follow_location' => TRUE,
+              ],
+            ]));
+
+            if (preg_match("/200|301/", $http_response_header[0])) {
+              $file = file_save_data($pic, $default_scheme . '://product-images/' . $basename);
+              $result[] = $file->id();
+            }
+          }
+        }
+      }
+      unset($itemImage, $basename, $img);
+    }
+
+    return $result;
+  }
+
+  /**
+   * Get term manufacturer and crated
+   *
+   * @param $name
+   *
+   * @return array
+   * @throws \Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException
+   * @throws \Drupal\Component\Plugin\Exception\PluginNotFoundException
+   * @throws \Drupal\Core\Entity\EntityStorageException
+   */
+  public static function getBrand($name): array {
+    $vid = 'brands';
+
+    $term = \Drupal::entityTypeManager()
+      ->getStorage('taxonomy_term')
+      ->loadByProperties(['name' => $name]);
+
+    if ($term) {
+      $result = [array_key_first($term)];
+    } else {
+      $term = Term::create([
+        'vid' => CommerceOasis::getVocabulary($vid),
+        'name' => $name,
+        'status' => 1,
+        'description' => [
+          'value' => '',
+          'format' => 'full_html',
+        ],
+        'changed' => time(),
+      ]);
+      $term->save();
+
+      $result = [$term->id()];
+    }
+
+    return $result;
+  }
+
+  /**
+   * Get taxonomy category and crated
+   *
+   * @param $productCategories
+   * @param $oasisCats
+   *
+   * @return array
+   * @throws \Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException
+   * @throws \Drupal\Component\Plugin\Exception\PluginNotFoundException
+   * @throws \Drupal\Core\Entity\EntityStorageException
+   */
+  public static function getCategories($productCategories, $oasisCats): array {
+    $idCategories = [];
+
+    foreach ($productCategories as $productCategory) {
+      $terms = \Drupal::entityTypeManager()
+        ->getStorage('taxonomy_term')
+        ->loadByProperties(['field_id_oasis' => $productCategory]);
+
+      if (!$terms) {
+        foreach ($oasisCats as $oasisCatItem) {
+          if ($oasisCatItem->id === $productCategory) {
+
+            $idCategories[] = (int) CommerceOasis::addCategory($oasisCatItem, $oasisCats);
+          }
+        }
+      } else {
+        $idCategories[] = array_key_first($terms);
+      }
+    }
+
+    return $idCategories;
+  }
+
+  /**
+   * Add taxonomy category
+   *
+   * @param $category
+   * @param $oasisCats
+   *
+   * @return int|mixed|string|null
+   * @throws \Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException
+   * @throws \Drupal\Component\Plugin\Exception\PluginNotFoundException
+   * @throws \Drupal\Core\Entity\EntityStorageException
+   */
+  public static function addCategory($category, $oasisCats) {
+    $parent = 0;
+
+    if (!is_null($category->parent_id)) {
+      $parent = \Drupal::entityTypeManager()
+        ->getStorage('taxonomy_term')
+        ->loadByProperties(['field_id_oasis' => $category->parent_id]);
+
+      if (!$parent) {
+        foreach ($oasisCats as $oasisCat) {
+          if ($oasisCat->id === $category->parent_id) {
+            $parent = CommerceOasis::addCategory($oasisCat, $oasisCats);
+          }
+        }
+      } else {
+        $parent = array_key_first($parent);
       }
     }
 
     $term = Term::create([
-      // Required fields
-      'vid' => CommerceOasis::getVocabulary($vid),
-      'name' => $name,
-      // Optional fields
+      'vid' => CommerceOasis::getVocabulary('product_categories'),
+      'name' => $category->name,
       'status' => 1,
       'description' => [
         'value' => '',
         'format' => 'full_html',
       ],
       'changed' => time(),
+      'depth_level' => $category->level,
+      'parent' => [$parent],
+      'field_id_oasis' => [$category->id],
     ]);
     $term->save();
 
@@ -83,7 +592,7 @@ class CommerceOasis extends ControllerBase {
   }
 
   /**
-   * Получение таксономии производителя, создание при отсутсвии
+   * Get taxonomy manufacturer and crated
    *
    * @param $vid
    * @param string $name
@@ -106,11 +615,61 @@ class CommerceOasis extends ControllerBase {
   }
 
   /**
+   * @param array $args
+   *
    * @return array
    */
-  public static function getOasisCategories(): array {
+  public function getOasisProducts(array $args = []): array {
+    $args['fieldset'] = 'full';
+
+    $data = [
+      'currency' => $this->config->get('oasis_currency'),
+      'no_vat' => $this->config->get('oasis_no_vat'),
+      'not_on_order' => $this->config->get('oasis_not_on_order'),
+      'price_from' => $this->config->get('oasis_price_from'),
+      'price_to' => $this->config->get('oasis_price_to'),
+      'rating' => $this->config->get('oasis_rating'),
+      'warehouse_moscow' => $this->config->get('oasis_warehouse_moscow'),
+      'warehouse_europe' => $this->config->get('oasis_warehouse_europe'),
+      'remote_warehouse' => $this->config->get('oasis_remote_warehouse'),
+    ];
+
+    $categories = array_values($this->config->get('oasis_categories'));
+    $categoryIds = [];
+
+    if (!is_null($categories)) {
+      foreach ($categories as $category) {
+        if ($category) {
+          $categoryIds[] = $category;
+        }
+      }
+
+      if (!count($categoryIds)) {
+        $categoryIds = array_keys(CommerceOasis::getOasisMainCategories());
+      }
+    } else {
+      $categoryIds = array_keys(CommerceOasis::getOasisMainCategories());
+    }
+
+    $data['category'] = implode(',', $categoryIds);
+
+    unset($categoryIds, $category);
+
+    foreach ($data as $key => $value) {
+      if ($value) {
+        $args[$key] = $value;
+      }
+    }
+
+    return CommerceOasis::curlQuery('v4/', 'products', $args);
+  }
+
+  /**
+   * @return array
+   */
+  public static function getOasisMainCategories(): array {
     $result = [];
-    $categories = CommerceOasis::curlQuery('v4/', 'categories', ['fields' => 'id,parent_id,root,level,slug,name,path']);
+    $categories = CommerceOasis::getOasisCategories();
 
     foreach ($categories as $category) {
       if ($category->level === 1) {
@@ -119,6 +678,13 @@ class CommerceOasis extends ControllerBase {
     }
 
     return $result;
+  }
+
+  /**
+   * @return array
+   */
+  public static function getOasisCategories(): array {
+    return CommerceOasis::curlQuery('v4/', 'categories', ['fields' => 'id,parent_id,root,level,slug,name,path']);
   }
 
   /**
@@ -133,8 +699,7 @@ class CommerceOasis extends ControllerBase {
       foreach ($currencies as $currency) {
         if ($currency->code === 'rub') {
           $ruble[$currency->code] = $currency->full_name;
-        }
-        else {
+        } else {
           $arrCurr[$currency->code] = $currency->full_name;
         }
       }
@@ -168,6 +733,241 @@ class CommerceOasis extends ControllerBase {
     curl_close($ch);
 
     return $http_code === 200 ? $result : FALSE;
+  }
+
+  /**
+   * @param string $color
+   *
+   * @return false|string
+   */
+  public static function getHexColor(string $color) {
+    $colors = [
+      1470 => [
+        'белый прозрачный',
+        'белый',
+        'матовый',
+        'белый перламутр',
+        'прозрачный',
+        'слоновая кость',
+        'белый натуральный',
+        'бесцветный полупрозрачный',
+      ],
+      1471 => [
+        'гранит',
+        'графит',
+        'антрацит',
+        'черный',
+        'черное дерево',
+        'черный глянцевый',
+        'черный металлик',
+        'черный насыщенный',
+        'черный полупрозрачный',
+        'черный прозрачный',
+        'угольный',
+      ],
+      1472 => [
+        'джинсовый',
+        'светло-синий',
+        'ярко-синий',
+        'баклажан',
+        'синий',
+        'деним',
+        'синий классический',
+        'синий меланж',
+        'синий глубокий',
+        'синий матовый',
+        'синий металлик',
+        'синий прозрачный',
+        'стальной синий',
+      ],
+      1473 => [
+        'темно-красный',
+        'светло-красный',
+        'красный меланж',
+        'красный прозрачный',
+        'красный',
+      ],
+      1474 => [
+        'зеленый',
+        'зеленый бутылочный',
+        'бирюзовый',
+        'зеленый армейский',
+        'зеленый прозрачный',
+        'светло-зеленый',
+        'зеленый дымчатый',
+        'жаде',
+        'зеленый матовый',
+        'зеленый меланж',
+        'изумрудный',
+        'оливковый',
+        'салатовый',
+        'хаки',
+        'темно-зеленый',
+        'фисташковый',
+        'ярко-зеленый',
+      ],
+      1475 => [
+        'неоновый зеленый',
+        'лайм',
+        'желто-зеленый',
+        'зеленое яблоко',
+      ],
+      1476 => [
+        'апельсин',
+        'оранжевый',
+        'медный',
+        'оранжевый прозрачный',
+        'рыжий',
+        'неоновый оранжевый',
+        'ярко-оранжевый',
+        'оранжевый металлик',
+      ],
+      1477 => [
+        'желтый прозрачный',
+        'светло-желтый',
+        'песочный',
+        'песочный темный',
+        'неоновый желтый',
+        'желтый',
+        'золотисто-желтый',
+      ],
+      1478 => [
+        'темно-бордовый',
+        'бордовый',
+        'бордо',
+        'бордовый металлик',
+        'бургунди',
+        'вишневый',
+        'красное дерево',
+        'светло-вишневый',
+        'бордо золотистый',
+      ],
+      1479 => [
+        'сиреневый прозрачный',
+        'лиловый',
+        'темно-фиолетовый',
+        'сиреневый',
+        'сливовый',
+        'фиолетовый',
+        'пурпурный',
+      ],
+      1480 => [
+        'голубой',
+        'аква',
+        'голубой лед',
+        'небесно-голубой',
+        'серо-голубой',
+        'лазурный',
+        'небесно-синий',
+        'морская волна',
+        'светло-голубой',
+      ],
+      1481 => [
+        'серебристый матовый',
+        'серый прозрачный',
+        'серый меланж',
+        'светлый меланж',
+        'серый стальной',
+        'темно-стальной',
+        'пепельный',
+        'пепельно-серый',
+        'светло-серый',
+        'темно-серый',
+        'стальной',
+        'серый',
+        'желтовато-серый',
+      ],
+      1482 => [
+        'шоколад',
+        'коричневый',
+        'каштановый',
+        'коричнево-серый',
+        'дерево',
+        'темно-коричневый',
+        'светло-коричневый',
+      ],
+      1483 => [
+        'молочный',
+        'серо-бежевый',
+        'мраморный',
+        'кремовый',
+        'натуральный',
+        'грязно-бежевый',
+        'бежевый',
+        'темно-бежевый',
+        'шампань',
+      ],
+      1484 => [
+        'золотистый',
+        'бронзовый',
+        'кофейно-золотистый',
+      ],
+      1485 => [
+        'металлик',
+        'серебристый металлик',
+        'серебристый прозрачный',
+        'серебристый',
+        'хром',
+      ],
+      1486 => [
+        'радуга',
+        'разноцветный',
+      ],
+      1487 => [
+        'неоновый розовый',
+        'розовый',
+        'фуксия',
+      ],
+      1488 => [
+        'темно-синий',
+        'navy',
+      ],
+    ];
+
+    foreach ($colors as $key => $value) {
+      foreach ($value as $itemColor) {
+        if (trim($itemColor) === $color) {
+          return CommerceOasis::parentColor($key);
+        }
+      }
+    }
+
+    return FALSE;
+  }
+
+  /**
+   * @param int $color_id
+   *
+   * @return string
+   */
+  public static function parentColor(int $color_id): string {
+    $colors = [
+      1470 => '#EFEFEF',
+      1471 => '#000000',
+      1472 => '#0000ff',
+      1473 => '#ff0000',
+      1474 => '#008000',
+      1475 => '#5edc1f',
+      1476 => '#ffa500',
+      1477 => '#ffff00',
+      1478 => '#9b2d30',
+      1479 => '#8b00ff',
+      1480 => '#42aaff',
+      1481 => '#808080',
+      1482 => '#964b00',
+      1483 => '#f5f5dc',
+      1484 => '#ffd700',
+      1485 => '#c0c0c0',
+      //1486 => '#Разноцветный',
+      1487 => '#ffc0cb',
+      1488 => '#002137',
+    ];
+
+    if (array_key_exists($color_id, $colors)) {
+      return $colors[$color_id];
+    }
+
+    return $colors[1481];
   }
 
 }

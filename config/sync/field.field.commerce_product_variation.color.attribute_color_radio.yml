@@ -1,0 +1,24 @@
+uuid: 342c8bf4-56d4-48de-8fd6-f1552a0357b5
+langcode: ru
+status: true
+dependencies:
+  config:
+    - commerce_product.commerce_product_attribute.color_radio
+    - commerce_product.commerce_product_variation_type.color
+    - field.storage.commerce_product_variation.attribute_color_radio
+id: commerce_product_variation.color.attribute_color_radio
+field_name: attribute_color_radio
+entity_type: commerce_product_variation
+bundle: color
+label: 'Варианты цвета'
+description: ''
+required: true
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:commerce_product_attribute_value'
+  handler_settings:
+    target_bundles:
+      - color_radio
+field_type: entity_reference

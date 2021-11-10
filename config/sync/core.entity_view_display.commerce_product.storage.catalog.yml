@@ -1,0 +1,33 @@
+uuid: 5d79ba53-8042-42cf-b873-4e17ce8f7d3f
+langcode: ru
+status: true
+dependencies:
+  config:
+    - commerce_product.commerce_product_type.storage
+    - core.entity_view_mode.commerce_product.catalog
+    - field.field.commerce_product.storage.field_brand
+    - field.field.commerce_product.storage.field_group_id_oasis
+    - field.field.commerce_product.storage.field_product_categories
+id: commerce_product.storage.catalog
+targetEntityType: commerce_product
+bundle: storage
+mode: catalog
+content:
+  title:
+    label: hidden
+    type: string
+    weight: 0
+    region: content
+    settings:
+      link_to_entity: true
+    third_party_settings: {  }
+hidden:
+  created: true
+  field_brand: true
+  field_group_id_oasis: true
+  field_product_categories: true
+  langcode: true
+  search_api_excerpt: true
+  stores: true
+  uid: true
+  variations: true

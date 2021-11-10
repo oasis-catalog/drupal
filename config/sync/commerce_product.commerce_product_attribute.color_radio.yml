@@ -1,0 +1,7 @@
+uuid: 37156ec7-9c28-453a-9126-0372bdffb07b
+langcode: ru
+status: true
+dependencies: {  }
+id: color_radio
+label: 'Варианты цвета'
+elementType: radios

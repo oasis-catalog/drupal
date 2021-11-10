@@ -1,0 +1,11 @@
+uuid: 3448a601-f345-4125-8fa3-3fe40a8900e7
+langcode: ru
+status: true
+dependencies:
+  config:
+    - commerce_product.commerce_product_type.color
+id: commerce_product.color
+target_entity_type_id: commerce_product
+target_bundle: color
+default_langcode: site_default
+language_alterable: false
