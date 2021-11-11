@@ -6,6 +6,7 @@
 /web/themes/contrib/
 /web/profiles/contrib/
 /web/libraries/
+config/sync/comment.settings.yml
 
 # Ignore sensitive information
 /web/sites/*/settings.php
