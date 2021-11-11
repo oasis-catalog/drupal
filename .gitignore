@@ -6,7 +6,7 @@
 /web/themes/contrib/
 /web/profiles/contrib/
 /web/libraries/
-config/sync/comment.settings.yml
+config/sync/commerce_oasis.settings.yml
 
 # Ignore sensitive information
 /web/sites/*/settings.php
