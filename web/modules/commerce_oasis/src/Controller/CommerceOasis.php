@@ -1,6 +1,7 @@
 <?php
 /**
  * @file
+ *
  * Contains \Drupal\commerce_oasis\Controller\Oasis.
  */
 
@@ -11,7 +12,12 @@ use Drupal\commerce_product\Entity\Product;
 use Drupal\commerce_product\Entity\ProductAttribute;
 use Drupal\commerce_product\Entity\ProductAttributeValue;
 use Drupal\commerce_product\Entity\ProductVariation;
+use Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException;
+use Drupal\Component\Plugin\Exception\PluginNotFoundException;
 use Drupal\Core\Controller\ControllerBase;
+use Drupal\Core\Entity\EntityBase;
+use Drupal\Core\Entity\EntityInterface;
+use Drupal\Core\Entity\EntityStorageException;
 use Drupal\Core\Field\FieldItemInterface;
 use Drupal\taxonomy\Entity\Term;
 use Drupal\taxonomy\Entity\Vocabulary;
@@ -73,46 +79,49 @@ class CommerceOasis extends ControllerBase {
   }
 
   /**
-   * @throws \Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException
-   * @throws \Drupal\Component\Plugin\Exception\PluginNotFoundException
-   * @throws \Drupal\Core\Entity\EntityStorageException
+   * @param bool $upStock
+   * @throws InvalidPluginDefinitionException
+   * @throws PluginNotFoundException
+   * @throws EntityStorageException
    */
-  public function doExecute() {
+public function doExecuteImport(bool $upStock) {
     set_time_limit(0);
     ini_set('memory_limit', '3G');
 
     try {
-      $this->categories = CommerceOasis::getOasisCategories();
-      $this->products = $this->getOasisProducts();
+      \Drupal::logger('commerce_oasis')->notice('Start process');
 
-      \Drupal::logger('commerce_oasis')->notice('Start import');
-
-      $allProduct = count($this->products);
-      $i = 0;
       $start_time = microtime(TRUE);
-      foreach ($this->products as $product) {
-        $start_time_product = microtime(TRUE);
-        $productId = $this->import($product);
-        $end_time_product = microtime(TRUE);
 
-        $i++;
-        \Drupal::logger('commerce_oasis')
-          ->notice($i . '/' . $allProduct . ' Время: ' . number_format(($end_time_product - $start_time_product), 4, '.', '') . ' сек. Id=' . $productId . ' Article=' . $product->article);
+      if ($upStock) {
+        $stock = CommerceOasis::getOasisStock();
+        if ($stock) {
+          $this->upStock($stock);
+        }
+      } else {
+        $this->categories = CommerceOasis::getOasisCategories();
+        $this->products = $this->getOasisProducts();
+
+        foreach ($this->products as $product) {
+          $this->import($product);
+        }
       }
       $end_time = microtime(TRUE);
+
       \Drupal::logger('commerce_oasis')
-        ->notice('End import. ' . 'Общее время обработки: ' . number_format(($end_time - $start_time), 4, '.', ''));
+        ->notice('End process. ' . 'Время обработки: ' . $this->secToHis($end_time - $start_time));
     } catch (Exception $e) {
     }
   }
 
   /**
-   * @param $product
+   * Import products
    *
+   * @param $product
    * @return int|mixed|string|null
-   * @throws \Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException
-   * @throws \Drupal\Component\Plugin\Exception\PluginNotFoundException
-   * @throws \Drupal\Core\Entity\EntityStorageException
+   * @throws InvalidPluginDefinitionException
+   * @throws PluginNotFoundException
+   * @throws EntityStorageException
    */
   public function import($product) {
     if (!is_null($product->parent_size_id)) {
@@ -127,13 +136,39 @@ class CommerceOasis extends ControllerBase {
   }
 
   /**
+   * Up products quantity
+   *
+   * @param $stock
+   */
+  public function upStock($stock) {
+    foreach ($stock as $item) {
+      $fidoQuery = \Drupal::database()
+        ->select('commerce_product_variation__field_id_oasis', 'fido');
+      $fidoQuery->addField('fido', 'entity_id');
+      $fidoQuery->condition('fido.field_id_oasis_value', $item->id);
+      $entity_id = $fidoQuery->execute()->fetchField();
+
+      if ($entity_id) {
+        $fsQuery = \Drupal::database()
+          ->update('commerce_product_variation__field_stock');
+        $fsQuery->fields([
+          'field_stock_value' => $item->stock,
+        ]);
+        $fsQuery->condition('entity_id', $entity_id);
+        $fsQuery->execute();
+      }
+    }
+    unset($item);
+  }
+
+  /**
    * @param $product
    * @param string $type
    *
-   * @return \Drupal\commerce_product\Entity\Product|\Drupal\Core\Entity\EntityBase|\Drupal\Core\Entity\EntityInterface|false|mixed
-   * @throws \Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException
-   * @throws \Drupal\Component\Plugin\Exception\PluginNotFoundException
-   * @throws \Drupal\Core\Entity\EntityStorageException
+   * @return Product|EntityBase|EntityInterface|false|mixed
+   * @throws InvalidPluginDefinitionException
+   * @throws PluginNotFoundException
+   * @throws EntityStorageException
    */
   public function checkProduct($product, string $type = 'other') {
     $variation = \Drupal::entityTypeManager()
@@ -198,11 +233,12 @@ class CommerceOasis extends ControllerBase {
    * @param $product
    * @param $cProduct
    * @param $type
+   * @param null $colorRadioId
    *
-   * @return \Drupal\commerce_product\Entity\ProductVariation|\Drupal\Core\Entity\EntityBase|\Drupal\Core\Entity\EntityInterface
-   * @throws \Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException
-   * @throws \Drupal\Component\Plugin\Exception\PluginNotFoundException
-   * @throws \Drupal\Core\Entity\EntityStorageException
+   * @return ProductVariation|EntityBase|EntityInterface
+   * @throws InvalidPluginDefinitionException
+   * @throws PluginNotFoundException
+   * @throws EntityStorageException
    */
   public function addVariation($product, $cProduct, $type, &$colorRadioId = NULL) {
     $attr = [
@@ -299,7 +335,7 @@ class CommerceOasis extends ControllerBase {
    * @param $product
    * @param $type
    *
-   * @throws \Drupal\Core\Entity\EntityStorageException
+   * @throws EntityStorageException
    */
   public function editVariation($variation, $product, $type) {
     $productVariation = ProductVariation::load($variation->id());
@@ -335,10 +371,10 @@ class CommerceOasis extends ControllerBase {
    * @param $variation
    * @param $type
    *
-   * @return \Drupal\commerce_product\Entity\Product|\Drupal\Core\Entity\EntityBase|\Drupal\Core\Entity\EntityInterface
-   * @throws \Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException
-   * @throws \Drupal\Component\Plugin\Exception\PluginNotFoundException
-   * @throws \Drupal\Core\Entity\EntityStorageException
+   * @return Product|EntityBase|EntityInterface
+   * @throws InvalidPluginDefinitionException
+   * @throws PluginNotFoundException
+   * @throws EntityStorageException
    */
   public function addProduct($product, $variation, $type) {
     $product = Product::create([
@@ -368,9 +404,9 @@ class CommerceOasis extends ControllerBase {
    * @param string $type
    *
    * @return array
-   * @throws \Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException
-   * @throws \Drupal\Component\Plugin\Exception\PluginNotFoundException
-   * @throws \Drupal\Core\Entity\EntityStorageException
+   * @throws InvalidPluginDefinitionException
+   * @throws PluginNotFoundException
+   * @throws EntityStorageException
    */
   public function getAttributeColor($data, string $type = 'other'): array {
     $productAttributeId = \Drupal::entityTypeManager()
@@ -402,9 +438,9 @@ class CommerceOasis extends ControllerBase {
    * @param string $attributeType
    *
    * @return array
-   * @throws \Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException
-   * @throws \Drupal\Component\Plugin\Exception\PluginNotFoundException
-   * @throws \Drupal\Core\Entity\EntityStorageException
+   * @throws InvalidPluginDefinitionException
+   * @throws PluginNotFoundException
+   * @throws EntityStorageException
    */
   public static function getAttribute(string $value, string $attributeType): array {
     $productAttributeId = \Drupal::entityTypeManager()
@@ -431,8 +467,8 @@ class CommerceOasis extends ControllerBase {
    * @param $images
    *
    * @return array
-   * @throws \Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException
-   * @throws \Drupal\Component\Plugin\Exception\PluginNotFoundException
+   * @throws InvalidPluginDefinitionException
+   * @throws PluginNotFoundException
    */
   public static function getImages($images): array {
     $result = [];
@@ -477,9 +513,9 @@ class CommerceOasis extends ControllerBase {
    * @param $name
    *
    * @return array
-   * @throws \Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException
-   * @throws \Drupal\Component\Plugin\Exception\PluginNotFoundException
-   * @throws \Drupal\Core\Entity\EntityStorageException
+   * @throws InvalidPluginDefinitionException
+   * @throws PluginNotFoundException
+   * @throws EntityStorageException
    */
   public static function getBrand($name): array {
     $vid = 'brands';
@@ -516,9 +552,9 @@ class CommerceOasis extends ControllerBase {
    * @param $oasisCats
    *
    * @return array
-   * @throws \Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException
-   * @throws \Drupal\Component\Plugin\Exception\PluginNotFoundException
-   * @throws \Drupal\Core\Entity\EntityStorageException
+   * @throws InvalidPluginDefinitionException
+   * @throws PluginNotFoundException
+   * @throws EntityStorageException
    */
   public static function getCategories($productCategories, $oasisCats): array {
     $idCategories = [];
@@ -550,9 +586,9 @@ class CommerceOasis extends ControllerBase {
    * @param $oasisCats
    *
    * @return int|mixed|string|null
-   * @throws \Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException
-   * @throws \Drupal\Component\Plugin\Exception\PluginNotFoundException
-   * @throws \Drupal\Core\Entity\EntityStorageException
+   * @throws InvalidPluginDefinitionException
+   * @throws PluginNotFoundException
+   * @throws EntityStorageException
    */
   public static function addCategory($category, $oasisCats) {
     $parent = 0;
@@ -598,7 +634,7 @@ class CommerceOasis extends ControllerBase {
    * @param string $name
    *
    * @return string
-   * @throws \Drupal\Core\Entity\EntityStorageException
+   * @throws EntityStorageException
    */
   public static function getVocabulary($vid, string $name = ''): string {
     $vocabularies = Vocabulary::loadMultiple();
@@ -685,6 +721,13 @@ class CommerceOasis extends ControllerBase {
    */
   public static function getOasisCategories(): array {
     return CommerceOasis::curlQuery('v4/', 'categories', ['fields' => 'id,parent_id,root,level,slug,name,path']);
+  }
+
+  /**
+   * @return array|false
+   */
+  public static function getOasisStock(): array {
+    return CommerceOasis::curlQuery('v4/', 'stock', ['fields' => 'id,stock']);
   }
 
   /**
@@ -968,6 +1011,22 @@ class CommerceOasis extends ControllerBase {
     }
 
     return $colors[1481];
+  }
+
+  /**
+   * @param $secs
+   *
+   * @return string
+   */
+  public function secToHis($secs) {
+    $res = [];
+    $res['hours'] = floor($secs / 3600);
+    $secs = $secs % 3600;
+
+    $res['minutes'] = floor($secs / 60);
+    $res['secs'] = $secs % 60;
+
+    return $res['hours'] . ':' . $res['minutes'] . ':' . $res['secs'];
   }
 
 }

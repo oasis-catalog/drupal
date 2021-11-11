@@ -11,3 +11,9 @@ services:
     tags:
       # facets_pretty_path is set to 1500.
       - { name: breadcrumb_builder, priority: 1501 }
+
+  commerce_oasis.commands:
+    class: Drupal\commerce_oasis\Commands\BatchCommands
+    tags:
+      - { name: drush.command }
+    arguments: ['@entity_type.manager', '@logger.factory']
