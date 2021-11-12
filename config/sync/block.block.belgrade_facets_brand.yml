@@ -12,7 +12,7 @@ dependencies:
 id: belgrade_facets_brand
 theme: belgrade
 region: sidebar_first
-weight: 0
+weight: -8
 provider: null
 plugin: 'facet_block:brand'
 settings:
