@@ -9,6 +9,7 @@ dependencies:
     - field.field.commerce_product.other.field_product_categories
   module:
     - commerce
+    - commerce_product
     - path
 id: commerce_product.other.default
 targetEntityType: commerce_product
@@ -90,13 +91,9 @@ content:
       placeholder: ''
     third_party_settings: {  }
   variations:
-    type: entity_reference_autocomplete
+    type: commerce_product_single_variation
     weight: 3
     region: content
-    settings:
-      match_operator: CONTAINS
-      match_limit: 10
-      size: 60
-      placeholder: ''
+    settings: {  }
     third_party_settings: {  }
 hidden: {  }
