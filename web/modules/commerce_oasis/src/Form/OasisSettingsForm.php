@@ -70,7 +70,7 @@ class OasisSettingsForm extends ConfigFormBase {
         $form['oasis_not_on_order'] = [
           '#type' => 'checkbox',
           '#title' => $this->t('Под заказ'),
-          '#default_value' => $config->get('oasis_no_vat'),
+          '#default_value' => $config->get('oasis_not_on_order'),
         ];
 
         $form['oasis_price_from'] = [
@@ -100,19 +100,19 @@ class OasisSettingsForm extends ConfigFormBase {
         $form['oasis_warehouse_moscow'] = [
           '#type' => 'checkbox',
           '#title' => $this->t('На складе в Москве'),
-          '#default_value' => $config->get('oasis_no_vat'),
+          '#default_value' => $config->get('oasis_warehouse_moscow'),
         ];
 
         $form['oasis_warehouse_europe'] = [
           '#type' => 'checkbox',
           '#title' => $this->t('На складе в Европе'),
-          '#default_value' => $config->get('oasis_no_vat'),
+          '#default_value' => $config->get('oasis_warehouse_europe'),
         ];
 
         $form['oasis_remote_warehouse'] = [
           '#type' => 'checkbox',
           '#title' => $this->t('На удаленном складе'),
-          '#default_value' => $config->get('oasis_no_vat'),
+          '#default_value' => $config->get('oasis_remote_warehouse'),
         ];
 
         $form['import_run'] = [
