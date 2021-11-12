@@ -142,7 +142,7 @@ class OasisSettingsForm extends ConfigFormBase {
    */
   public function importRun() {
     $oasis = new CommerceOasis;
-    $oasis->doExecute();
+    $oasis->doExecuteImport(false);
 
     $msg = 'Variation added id = ';
 
