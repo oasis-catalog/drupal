@@ -17,18 +17,18 @@ mode: default
 content:
   created:
     type: datetime_timestamp
-    weight: 4
+    weight: 5
     region: content
     settings: {  }
     third_party_settings: {  }
   field_brand:
-    weight: 6
+    weight: 7
     settings: {  }
     third_party_settings: {  }
     type: options_select
     region: content
   field_group_id_oasis:
-    weight: 8
+    weight: 9
     settings:
       size: 60
       placeholder: ''
@@ -36,7 +36,7 @@ content:
     type: string_textfield
     region: content
   field_product_categories:
-    weight: 7
+    weight: 8
     settings: {  }
     third_party_settings: {  }
     type: options_select
@@ -50,7 +50,7 @@ content:
     third_party_settings: {  }
   path:
     type: path
-    weight: 5
+    weight: 6
     region: content
     settings: {  }
     third_party_settings: {  }
@@ -58,7 +58,7 @@ content:
     type: boolean_checkbox
     settings:
       display_label: true
-    weight: 9
+    weight: 10
     region: content
     third_party_settings: {  }
   stores:
@@ -81,6 +81,16 @@ content:
     third_party_settings: {  }
   uid:
     type: entity_reference_autocomplete
+    weight: 4
+    region: content
+    settings:
+      match_operator: CONTAINS
+      match_limit: 10
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+  variations:
+    type: entity_reference_autocomplete
     weight: 3
     region: content
     settings:
@@ -89,5 +99,4 @@ content:
       size: 60
       placeholder: ''
     third_party_settings: {  }
-hidden:
-  variations: true
+hidden: {  }

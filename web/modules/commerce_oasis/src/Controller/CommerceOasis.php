@@ -19,6 +19,7 @@ use Drupal\Core\Entity\EntityBase;
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Entity\EntityStorageException;
 use Drupal\Core\Field\FieldItemInterface;
+use Drupal\Core\File\FileSystemInterface;
 use Drupal\taxonomy\Entity\Term;
 use Drupal\taxonomy\Entity\Vocabulary;
 
@@ -475,6 +476,8 @@ public function doExecuteImport(bool $upStock) {
 
     if (is_array($images)) {
       $default_scheme = \Drupal::config('system.file')->get('default_scheme');
+      $folder = $default_scheme . '://product-images/';
+      \Drupal::service('file_system')->prepareDirectory($folder, FileSystemInterface::CREATE_DIRECTORY);
 
       foreach ($images as $itemImage) {
         if (isset($itemImage->superbig)) {
@@ -495,7 +498,7 @@ public function doExecuteImport(bool $upStock) {
             ]));
 
             if (preg_match("/200|301/", $http_response_header[0])) {
-              $file = file_save_data($pic, $default_scheme . '://product-images/' . $basename);
+              $file = file_save_data($pic, $folder . $basename);
               $result[] = $file->id();
             }
           }
