@@ -150,13 +150,31 @@ public function doExecuteImport(bool $upStock) {
       $entity_id = $fidoQuery->execute()->fetchField();
 
       if ($entity_id) {
-        $fsQuery = \Drupal::database()
-          ->update('commerce_product_variation__field_stock');
-        $fsQuery->fields([
-          'field_stock_value' => $item->stock,
-        ]);
-        $fsQuery->condition('entity_id', $entity_id);
-        $fsQuery->execute();
+        if ($item->stock === 0) {
+          $queryStock = \Drupal::database()
+            ->select('commerce_product_variation__field_stock', 'fido');
+          $queryStock->addField('fido', 'field_stock_value');
+          $queryStock->condition('fido.entity_id', $entity_id);
+          $variationStock = $queryStock->execute()->fetchField();
+
+          if ((int)$variationStock !== 99999) {
+            $fsQuery = \Drupal::database()
+              ->update('commerce_product_variation__field_stock');
+            $fsQuery->fields([
+              'field_stock_value' => $item->stock,
+            ]);
+            $fsQuery->condition('entity_id', $entity_id);
+            $fsQuery->execute();
+          }
+        } else {
+          $fsQuery = \Drupal::database()
+            ->update('commerce_product_variation__field_stock');
+          $fsQuery->fields([
+            'field_stock_value' => $item->stock,
+          ]);
+          $fsQuery->condition('entity_id', $entity_id);
+          $fsQuery->execute();
+        }
       }
     }
     unset($item);
