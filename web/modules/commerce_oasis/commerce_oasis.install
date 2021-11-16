@@ -1,0 +1,35 @@
+<?php
+
+/**
+ * @file
+ * Install and uninstall functions for the commerce_oasis module.
+ *
+ * This file contains the functions required to perform install and
+ * uninstall operations.
+ */
+
+/**
+* Implements hook_schema().
+*
+* @ingroup commerce_oasis
+*/
+function commerce_oasis_schema() {
+  $schema['commerce_order_oasis'] = [
+    'description' => 'Commerce orders oasis queue.',
+    'fields' => [
+      'order_id' => [
+        'description' => 'This column commerce order id',
+        'type' => 'int',
+        'not null' => TRUE,
+      ],
+      'queue_id' => [
+        'description' => 'This column oasis queue id',
+        'type' => 'int',
+        'not null' => TRUE,
+      ],
+    ],
+    'primary key' => ['order_id'],
+  ];
+
+return $schema;
+}

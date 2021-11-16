@@ -5,6 +5,20 @@ commerce_oasis.settings:
     _title: 'Настройки импорта товаров'
   requirements:
     _permission: 'administer site configuration'
+commerce_oasis.orders:
+  path: '/admin/commerce/config/oasis/orders'
+  defaults:
+    _controller: '\Drupal\commerce_oasis\Controller\CommerceOasisOrders::build'
+    _title: 'Экспорт заказов'
+  requirements:
+    _permission: 'administer site configuration'
+commerce_oasis.ajax:
+  path: '/admin/commerce/config/oasis/orders/{orderId}'
+  defaults:
+    _title: 'Ajax send'
+    _controller: '\Drupal\commerce_oasis\Controller\CommerceOasisOrders::ajaxSend'
+  requirements:
+    _permission: 'administer site configuration'
 commerce_oasis.frontpage:
   path: '/frontpage'
   defaults:

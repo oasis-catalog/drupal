@@ -17,6 +17,13 @@ function commerce_oasis_theme() {
         'featured_products' => [],
       ],
     ],
+    'oasis_orders' => [
+      'variables' => [
+        'validate' => FALSE,
+        'message' => '',
+        'orders' => [],
+      ],
+    ],
   ];
 }
 

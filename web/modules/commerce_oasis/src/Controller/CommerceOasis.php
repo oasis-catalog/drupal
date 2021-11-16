@@ -2,7 +2,7 @@
 /**
  * @file
  *
- * Contains \Drupal\commerce_oasis\Controller\Oasis.
+ * Contains \Drupal\commerce_oasis\Controller\CommerceOasis.
  */
 
 namespace Drupal\commerce_oasis\Controller;

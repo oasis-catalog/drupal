@@ -3,3 +3,8 @@ commerce_oasis.settings:
   parent: commerce.configuration
   route_name: commerce_oasis.settings
   weight: 50
+commerce_oasis.orders:
+  title: 'Commerce Oasis Orders'
+  parent: commerce.configuration
+  route_name: commerce_oasis.orders
+  weight: 51

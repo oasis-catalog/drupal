@@ -1,0 +1,40 @@
+{% if (validate) %}
+  <table class="views-table views-view-table cols-8 responsive-enabled">
+    <thead>
+      <tr>
+        <th id="view-order-number-table-column" class="views-field views-field-order-number">ID</th>
+        <th id="view-order-number-table-column" class="views-field views-field-order-products">Products</th>
+        <th id="view-order-number-table-column" class="views-field views-field-order-total-summa">Total summa</th>
+        <th id="view-order-number-table-column" class="views-field views-field-order-export">Export</th>
+      </tr>
+    </thead>
+    <tbody>
+    {% for order in orders %}
+      <tr>
+        <td class="views-field views-field-order-number">{{ order.id }}</td>
+        <td class="views-field views-field-order-products">
+          <table>
+            <tbody>
+            {% for product in order.products %}
+              <tr>
+                <td>{{ product }}</td>
+              </tr>
+            {% endfor %}
+            </tbody>
+          </table>
+        </td>
+        <td class="views-field views-field-order-total-summa">{{ order.totalSumma }}</td>
+        <td class="views-field views-field-order-export">
+          {% if (order.queue == false) %}
+            <a class="use-ajax order-{{ order.id }}" href="/admin/commerce/config/oasis/orders/{{ order.id }}"><button type="button" class="btn">Export</button></a>
+          {% endif %}
+        </td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+{% endif %}
+
+<p>
+  {{ message }}
+</p>
