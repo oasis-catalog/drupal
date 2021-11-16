@@ -691,10 +691,11 @@ public function doExecuteImport(bool $upStock) {
       'remote_warehouse' => $this->config->get('oasis_remote_warehouse'),
     ];
 
-    $categories = array_values($this->config->get('oasis_categories'));
+	$categories = $this->config->get('oasis_categories');
     $categoryIds = [];
 
     if (!is_null($categories)) {
+      $categories = array_values($categories);
       foreach ($categories as $category) {
         if ($category) {
           $categoryIds[] = $category;
