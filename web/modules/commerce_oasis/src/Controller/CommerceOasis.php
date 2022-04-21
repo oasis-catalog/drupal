@@ -85,7 +85,8 @@ class CommerceOasis extends ControllerBase {
    * @throws PluginNotFoundException
    * @throws EntityStorageException
    */
-public function doExecuteImport(bool $upStock) {
+  public function doExecuteImport(bool $upStock)
+  {
     set_time_limit(0);
     ini_set('memory_limit', '3G');
 
@@ -100,11 +101,30 @@ public function doExecuteImport(bool $upStock) {
           $this->upStock($stock);
         }
       } else {
+        $args = [];
+        $limit = (int)$this->config->get('oasis_limit');
+        $step = (int)$this->config->get('oasis_step');
+
+        if ($limit > 0) {
+          $args['limit'] = $limit;
+          $args['offset'] = $step * $limit;
+        }
+
         $this->categories = CommerceOasis::getOasisCategories();
-        $this->products = $this->getOasisProducts();
+        $this->products = $this->getOasisProducts($args);
 
         foreach ($this->products as $product) {
           $this->import($product);
+        }
+
+        if (!empty($limit)) {
+          if ($this->products) {
+            $nextStep = ++$step;
+          } else {
+            $nextStep = 0;
+          }
+
+          \Drupal::service('config.factory')->getEditable('commerce_oasis.settings')->set('oasis_step', $nextStep)->save();
         }
       }
       $end_time = microtime(TRUE);
@@ -676,22 +696,23 @@ public function doExecuteImport(bool $upStock) {
    *
    * @return array
    */
-  public function getOasisProducts(array $args = []): array {
+  public function getOasisProducts(array $args = []): array
+  {
     $args['fieldset'] = 'full';
 
     $data = [
-      'currency' => $this->config->get('oasis_currency'),
-      'no_vat' => $this->config->get('oasis_no_vat'),
-      'not_on_order' => $this->config->get('oasis_not_on_order'),
-      'price_from' => $this->config->get('oasis_price_from'),
-      'price_to' => $this->config->get('oasis_price_to'),
-      'rating' => $this->config->get('oasis_rating'),
+      'currency'         => $this->config->get('oasis_currency'),
+      'no_vat'           => $this->config->get('oasis_no_vat'),
+      'not_on_order'     => $this->config->get('oasis_not_on_order'),
+      'price_from'       => $this->config->get('oasis_price_from'),
+      'price_to'         => $this->config->get('oasis_price_to'),
+      'rating'           => $this->config->get('oasis_rating'),
       'warehouse_moscow' => $this->config->get('oasis_warehouse_moscow'),
       'warehouse_europe' => $this->config->get('oasis_warehouse_europe'),
       'remote_warehouse' => $this->config->get('oasis_remote_warehouse'),
     ];
 
-	$categories = $this->config->get('oasis_categories');
+    $categories = $this->config->get('oasis_categories');
     $categoryIds = [];
 
     if (!is_null($categories)) {

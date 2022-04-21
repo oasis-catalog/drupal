@@ -115,6 +115,12 @@ class OasisSettingsForm extends ConfigFormBase {
           '#default_value' => $config->get('oasis_remote_warehouse'),
         ];
 
+        $form['oasis_limit'] = [
+          '#type' => 'number',
+          '#title' => $this->t('Лимит'),
+          '#default_value' => $config->get('oasis_limit'),
+        ];
+
         $form['import_run'] = [
           '#type' => 'details',
           '#title' => $this->t('Run import manually'),
@@ -167,6 +173,8 @@ class OasisSettingsForm extends ConfigFormBase {
       ->set('oasis_warehouse_moscow', $form_state->getValue('oasis_warehouse_moscow'))
       ->set('oasis_warehouse_europe', $form_state->getValue('oasis_warehouse_europe'))
       ->set('oasis_remote_warehouse', $form_state->getValue('oasis_remote_warehouse'))
+      ->set('oasis_limit', $form_state->getValue('oasis_limit'))
+      ->set('oasis_step', 0)
       ->save();
 
     parent::submitForm($form, $form_state);
