@@ -55,6 +55,13 @@ class CommerceOasis extends ControllerBase {
   private $defaultStore;
 
   /**
+   * The data calculation price module Oasis.
+   *
+   * @var array
+   */
+  private $calculation = [];
+
+  /**
    * Constructs.
    */
   public function __construct() {
@@ -104,6 +111,11 @@ class CommerceOasis extends ControllerBase {
         $args = [];
         $limit = (int)$this->config->get('oasis_limit');
         $step = (int)$this->config->get('oasis_step');
+        $this->calculation = [
+          'factor'   => (float)$this->config->get('oasis_factor'),
+          'increase' => (float)$this->config->get('oasis_increase'),
+          'dealer'   => $this->config->get('oasis_dealer'),
+        ];
 
         if ($limit > 0) {
           $args['limit'] = $limit;
@@ -279,15 +291,16 @@ class CommerceOasis extends ControllerBase {
    * @throws PluginNotFoundException
    * @throws EntityStorageException
    */
-  public function addVariation($product, $cProduct, $type, &$colorRadioId = NULL) {
+  public function addVariation($product, $cProduct, $type, &$colorRadioId = NULL)
+  {
     $attr = [
-      'type' => $type,
-      'sku' => $product->article,
-      'price' => new Price($product->price, 'RUB'),
-      'field_body' => $product->description,
+      'type'           => $type,
+      'sku'            => $product->article,
+      'price'          => new Price($this->getCalculationPrice($product), 'RUB'),
+      'field_body'     => $product->description,
       'field_id_oasis' => [$product->id],
-      'status' => $this->getStatusAndStock($product)['status'],
-      'field_stock' => $this->getStatusAndStock($product)['field_stock'],
+      'status'         => $this->getStatusAndStock($product)['status'],
+      'field_stock'    => $this->getStatusAndStock($product)['field_stock'],
     ];
 
     $attribute_name = 'attribute_color';
@@ -301,7 +314,7 @@ class CommerceOasis extends ControllerBase {
             $needed = CommerceOasis::getHexColor(trim($attributeColorItem));
             if ($needed) {
               $color = [
-                'name' => trim($attributeColorItem),
+                'name'  => trim($attributeColorItem),
                 'value' => $needed,
               ];
               break;
@@ -319,7 +332,7 @@ class CommerceOasis extends ControllerBase {
           $needed = CommerceOasis::parentColor($colorItem->parent_id);
           if ($needed) {
             $color = [
-              'name' => trim($colorItem->name),
+              'name'  => trim($colorItem->name),
               'value' => CommerceOasis::parentColor($colorItem->parent_id),
             ];
             $attr[$attribute_name] = $this->getAttributeColor($color, $type);
@@ -348,7 +361,7 @@ class CommerceOasis extends ControllerBase {
       $cVariation = current(\Drupal::entityTypeManager()
         ->getStorage('commerce_product_variation')
         ->loadByProperties([
-          'product_id' => $cProduct->id(),
+          'product_id'    => $cProduct->id(),
           $attribute_name => reset($attr[$attribute_name]),
         ]));
 
@@ -378,11 +391,32 @@ class CommerceOasis extends ControllerBase {
    */
   public function editVariation($variation, $product, $type) {
     $productVariation = ProductVariation::load($variation->id());
-    $productVariation->setPrice(new Price($product->price, 'RUB'));
+    $productVariation->setPrice(new Price($this->getCalculationPrice($product), 'RUB'));
     $productVariation->set('field_body', $product->description);
     $productVariation->set('status', $this->getStatusAndStock($product)['status']);
     $productVariation->set('field_stock', $this->getStatusAndStock($product)['field_stock']);
     $productVariation->save();
+  }
+
+  /**
+   * Get calculation price
+   *
+   * @param $product
+   * @return float
+   */
+  public function getCalculationPrice($product): float
+  {
+    $price = !empty($this->calculation['dealer']) ? $product->discount_price : $product->price;
+
+    if (!empty($this->calculation['factor'])) {
+      $price = $price * (float)$this->calculation['factor'];
+    }
+
+    if (!empty($this->calculation['increase'])) {
+      $price = $price + (float)$this->calculation['increase'];
+    }
+
+    return (float)$price;
   }
 
   /**

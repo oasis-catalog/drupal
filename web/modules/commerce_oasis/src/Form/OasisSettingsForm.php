@@ -121,6 +121,26 @@ class OasisSettingsForm extends ConfigFormBase {
           '#default_value' => $config->get('oasis_limit'),
         ];
 
+        $form['oasis_factor'] = [
+          '#type' => 'number',
+          '#title' => $this->t('Коэффициент цены'),
+          '#default_value' => $config->get('oasis_factor'),
+          '#step' => '0.01',
+        ];
+
+        $form['oasis_increase'] = [
+          '#type' => 'number',
+          '#title' => $this->t('Надбавка к цене'),
+          '#default_value' => $config->get('oasis_increase'),
+          '#step' => '0.01',
+        ];
+
+        $form['oasis_dealer'] = [
+          '#type' => 'checkbox',
+          '#title' => $this->t('Использовать диллерские цены'),
+          '#default_value' => $config->get('oasis_dealer'),
+        ];
+
         $form['import_run'] = [
           '#type' => 'details',
           '#title' => $this->t('Run import manually'),
@@ -175,6 +195,9 @@ class OasisSettingsForm extends ConfigFormBase {
       ->set('oasis_remote_warehouse', $form_state->getValue('oasis_remote_warehouse'))
       ->set('oasis_limit', $form_state->getValue('oasis_limit'))
       ->set('oasis_step', 0)
+      ->set('oasis_factor', $form_state->getValue('oasis_factor'))
+      ->set('oasis_increase', $form_state->getValue('oasis_increase'))
+      ->set('oasis_dealer', $form_state->getValue('oasis_dealer'))
       ->save();
 
     parent::submitForm($form, $form_state);
