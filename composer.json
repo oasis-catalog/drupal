@@ -13,6 +13,10 @@
         {
             "type": "composer",
             "url": "https://packages.drupal.org/8"
+        },
+        {
+            "type": "vcs",
+            "url": "https://git.drupalcode.org/project/config_installer"
         }
     ],
     "require": {
@@ -27,7 +31,7 @@
         "drupal/commerce_cart_flyout": "^1.8",
         "drupal/commerce_shipping": "^2.1",
         "drupal/commerce_simple_stock": "^1.1",
-        "drupal/config_installer": "^1.8",
+        "drupal/config_installer": "@dev",
         "drupal/console": "^1.0.2",
         "drupal/core": "^8.8.0",
         "drupal/core-composer-scaffold": "^8.8.0",
@@ -46,7 +50,7 @@
         "drupal/swiftmailer": "^2.0",
         "drupal/taxonomy_menu": "^3.5",
         "drupal/taxonomy_term_depth": "^2.5",
-        "drush/drush": "^9.7.1 | ^10.0.0",
+        "drush/drush": "~9.7.1",
         "vlucas/phpdotenv": "^4.0",
         "webflo/drupal-finder": "^1.0.0",
         "zaporylie/composer-drupal-optimizations": "^1.0"
