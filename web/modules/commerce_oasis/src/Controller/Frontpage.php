@@ -6,7 +6,8 @@ use Drupal\Core\Controller\ControllerBase;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
-class Frontpage extends ControllerBase {
+class Frontpage extends ControllerBase
+{
 
   /**
    * The entity type manager.
@@ -21,14 +22,16 @@ class Frontpage extends ControllerBase {
    * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entity_type_manager
    *   The entity type manager.
    */
-  public function __construct(EntityTypeManagerInterface $entity_type_manager) {
+  public function __construct(EntityTypeManagerInterface $entity_type_manager)
+  {
     $this->entityTypeManager = $entity_type_manager;
   }
 
   /**
    * {@inheritdoc}
    */
-  public static function create(ContainerInterface $container) {
+  public static function create(ContainerInterface $container)
+  {
     return new static(
       $container->get('entity_type.manager')
     );
@@ -40,7 +43,8 @@ class Frontpage extends ControllerBase {
    * @return array
    *   A render array.
    */
-  public function view() {
+  public function view()
+  {
     $product_view_builder = $this->entityTypeManager->getViewBuilder('commerce_product');
     $build = [
       '#theme' => 'commerce_oasis_frontpage',

@@ -7,9 +7,10 @@ use Symfony\Component\Routing\Exception\RouteNotFoundException;
 /**
  * Implements hook_theme().
  */
-function commerce_oasis_theme() {
+function commerce_oasis_theme()
+{
   return [
-    'oasis_settings' => [
+    'oasis_settings'           => [
       'variables' => [],
     ],
     'commerce_oasis_frontpage' => [
@@ -17,11 +18,10 @@ function commerce_oasis_theme() {
         'featured_products' => [],
       ],
     ],
-    'oasis_orders' => [
+    'oasis_orders'             => [
       'variables' => [
         'validate' => FALSE,
-        'message' => '',
-        'orders' => [],
+        'orders'   => [],
       ],
     ],
   ];
@@ -32,7 +32,8 @@ function commerce_oasis_theme() {
  *
  * hook_page_attachments()
  */
-function commerce_oasis_page_attachments(array &$page) {
+function commerce_oasis_page_attachments(array &$page)
+{
   $page['#attached']['library'][] = 'commerce_oasis/commerce.belgrade';
 }
 
@@ -41,15 +42,15 @@ function commerce_oasis_page_attachments(array &$page) {
  *
  * Workaround for taxonomy_menu not supporting custom paths. See #2865894.
  */
-function commerce_oasis_menu_links_discovered_alter(&$links) {
+function commerce_oasis_menu_links_discovered_alter(&$links)
+{
   $alias_cleaner = \Drupal::service('pathauto.alias_cleaner');
   $facet_storage = \Drupal::entityTypeManager()->getStorage('facets_facet');
   $term_storage = \Drupal::entityTypeManager()->getStorage('taxonomy_term');
   try {
     $view_url = Url::fromRoute('view.product_catalog.page_1');
     $view_url = $view_url->getInternalPath();
-  }
-  catch (RouteNotFoundException $e) {
+  } catch (RouteNotFoundException $e) {
     // The catalog View may have been disabled or deleted.
     return;
   }
@@ -82,7 +83,8 @@ function commerce_oasis_menu_links_discovered_alter(&$links) {
 /**
  * Implements hook_preprocess_breadcrumb().
  */
-function commerce_oasis_preprocess_breadcrumb(&$variables) {
+function commerce_oasis_preprocess_breadcrumb(&$variables)
+{
   // The Bootstrap theme provides a feature that appends the current page title
   // to the end of the breadcrumbs. On the catalog page this is awkward, as
   // Facets already appends the facet source page title when a facet filter

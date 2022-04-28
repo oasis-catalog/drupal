@@ -15,7 +15,8 @@ use Drupal\Core\Controller\ControllerBase;
 /**
  * Provides route for our commerce module.
  */
-class CommerceOasisOrders extends ControllerBase {
+class CommerceOasisOrders extends ControllerBase
+{
 
   /**
    * The config module Oasis.
@@ -25,11 +26,13 @@ class CommerceOasisOrders extends ControllerBase {
   /**
    * Constructs.
    */
-  public function __construct() {
+  public function __construct()
+  {
     $this->config = $this->config('commerce_oasis.settings');
   }
 
-  public function ajaxSend($orderId) {
+  public function ajaxSend($orderId)
+  {
     $user_id = $this->config->get('oasis_api_user_id');
     $response = new AjaxResponse();
 
@@ -49,7 +52,7 @@ class CommerceOasisOrders extends ControllerBase {
 
         $data['items'][] = [
           'productId' => $oasisProductId,
-          'quantity' => (int)$variation->getQuantity(),
+          'quantity'  => (int)$variation->getQuantity(),
         ];
       }
 
@@ -79,57 +82,73 @@ class CommerceOasisOrders extends ControllerBase {
   /**
    * Builds the response.
    */
-  public function build() {
+  public function build()
+  {
     $build['content'] = [
       '#theme' => 'oasis_orders',
     ];
 
-    $validate = CommerceOasis::getOasisCurrency();
+    $apiKey = $this->config->get('oasis_api_key');
 
-    if ($validate) {
-      $build['content']['#validate'] = TRUE;
+    if (!empty($apiKey)) {
+      $validate = CommerceOasis::getOasisCurrency();
 
-      $orders = \Drupal::entityTypeManager()
-        ->getStorage('commerce_order')
-        ->getQuery()
-        ->condition('state', 'fulfillment')
-        ->execute();
+      if ($validate) {
+        $apiUserId = $this->config->get('oasis_api_user_id');
 
-      if ($orders) {
-        foreach ($orders as $orderId) {
-          $products = [];
-          $order = Order::load($orderId);
-          $items = $order->getItems();
+        if (!empty($apiUserId)) {
+          $build['content']['#validate'] = TRUE;
 
-          foreach ($items as $item) {
-            $products[] = $item->getTitle();
+          $orders = \Drupal::entityTypeManager()
+            ->getStorage('commerce_order')
+            ->getQuery()
+            ->condition('state', 'fulfillment')
+            ->execute();
+
+          if ($orders) {
+            foreach ($orders as $orderId) {
+              $products = [];
+              $order = Order::load($orderId);
+              $items = $order->getItems();
+
+              foreach ($items as $item) {
+                $products[] = $item->getTitle();
+              }
+              unset($items, $item);
+
+              $queueQuery = \Drupal::database()
+                ->select('commerce_order_oasis', 'os');
+              $queueQuery->addField('os', 'queue_id');
+              $queueQuery->condition('os.order_id', $order->getOrderNumber());
+              $orderQueue = $queueQuery->execute()->fetchField();
+
+              $build['content']['#orders'][] = [
+                'id'         => $order->getOrderNumber(),
+                'totalSumma' => $order->getTotalPrice()->getNumber(),
+                'products'   => $products,
+                'queue'      => $orderQueue,
+              ];
+            }
+          } else {
+            $this->messenger()->addMessage($this->t('Not orders!'), 'status');
           }
-          unset($items, $item);
-
-          $queueQuery = \Drupal::database()
-            ->select('commerce_order_oasis', 'os');
-          $queueQuery->addField('os', 'queue_id');
-          $queueQuery->condition('os.order_id', $order->getOrderNumber());
-          $orderQueue = $queueQuery->execute()->fetchField();
-
-          $build['content']['#orders'][] = [
-            'id' => $order->getOrderNumber(),
-            'totalSumma' => $order->getTotalPrice()->getNumber(),
-            'products' => $products,
-            'queue' => $orderQueue,
-          ];
+        } else {
+          $this->messenger()->addMessage($this->t('Warning! Not User Id!'), 'warning');
         }
       } else {
-        $build['content']['#message'] = $this->t('Not orders');
+        $this->messenger()->deleteByType('error');
+        $this->messenger()->addMessage($this->t('Error Unauthorized. Invalid API key!'), 'error');
       }
     } else {
-      $build['content']['#message'] = $this->t('No valid API key');
+      $this->messenger()->deleteByType('error');
+      $this->messenger()->addMessage($this->t('Error! Not API key!'), 'error');
     }
 
     return $build;
   }
 
-  protected function sendOrder($data) {
+  protected function sendOrder($data)
+  {
     $apiKey = $this->config->get('oasis_api_key');
 
     try {

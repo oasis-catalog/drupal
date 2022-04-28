@@ -19,7 +19,8 @@ use Symfony\Component\Routing\Exception\RouteNotFoundException;
 /**
  * Builds a product breadcrumb based on the "field_product_categories" field.
  */
-class ProductBreadcrumbBuilder implements BreadcrumbBuilderInterface {
+class ProductBreadcrumbBuilder implements BreadcrumbBuilderInterface
+{
 
   use StringTranslationTrait;
 
@@ -57,7 +58,8 @@ class ProductBreadcrumbBuilder implements BreadcrumbBuilderInterface {
    * @throws \Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException
    * @throws \Drupal\Component\Plugin\Exception\PluginNotFoundException
    */
-  public function __construct(AliasCleanerInterface $alias_cleaner, EntityTypeManagerInterface $entity_type_manager, RouteProviderInterface $route_provider) {
+  public function __construct(AliasCleanerInterface $alias_cleaner, EntityTypeManagerInterface $entity_type_manager, RouteProviderInterface $route_provider)
+  {
     $this->aliasCleaner = $alias_cleaner;
     $this->facetStorage = $entity_type_manager->getStorage('facets_facet');
     $this->routeProvider = $route_provider;
@@ -66,14 +68,14 @@ class ProductBreadcrumbBuilder implements BreadcrumbBuilderInterface {
   /**
    * {@inheritdoc}
    */
-  public function applies(RouteMatchInterface $route_match) {
+  public function applies(RouteMatchInterface $route_match)
+  {
     if ($route_match->getRouteName() !== 'entity.commerce_product.canonical') {
       return FALSE;
     }
     try {
       $this->routeProvider->getRouteByName('view.product_catalog.page_1');
-    }
-    catch (RouteNotFoundException $e) {
+    } catch (RouteNotFoundException $e) {
       // The catalog View may have been disabled or deleted.
       return FALSE;
     }
@@ -85,7 +87,8 @@ class ProductBreadcrumbBuilder implements BreadcrumbBuilderInterface {
   /**
    * {@inheritdoc}
    */
-  public function build(RouteMatchInterface $route_match) {
+  public function build(RouteMatchInterface $route_match)
+  {
     $breadcrumb = new Breadcrumb();
     $breadcrumb->addCacheContexts(['route']);
     $breadcrumb->addLink(Link::createFromRoute($this->t('Home'), '<front>'));

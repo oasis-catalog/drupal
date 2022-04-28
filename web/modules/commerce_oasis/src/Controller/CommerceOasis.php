@@ -26,7 +26,8 @@ use Drupal\taxonomy\Entity\Vocabulary;
 /**
  * Provides route for our commerce module.
  */
-class CommerceOasis extends ControllerBase {
+class CommerceOasis extends ControllerBase
+{
 
   /**
    * The config module Oasis.
@@ -64,7 +65,8 @@ class CommerceOasis extends ControllerBase {
   /**
    * Constructs.
    */
-  public function __construct() {
+  public function __construct()
+  {
     $this->config = $this->config('commerce_oasis.settings');
 
     $store = \Drupal::entityTypeManager()
@@ -77,7 +79,8 @@ class CommerceOasis extends ControllerBase {
   /**
    * Builds the response.
    */
-  public function build() {
+  public function build()
+  {
 
     $build['content'] = [
       '#theme' => 'oasis_settings',
@@ -155,7 +158,8 @@ class CommerceOasis extends ControllerBase {
    * @throws PluginNotFoundException
    * @throws EntityStorageException
    */
-  public function import($product) {
+  public function import($product)
+  {
     if (!is_null($product->parent_size_id)) {
       $result = $this->checkProduct($product, 'clothing');
     } elseif (!is_null($product->parent_color_id)) {
@@ -172,7 +176,8 @@ class CommerceOasis extends ControllerBase {
    *
    * @param $stock
    */
-  public function upStock($stock) {
+  public function upStock($stock)
+  {
     foreach ($stock as $item) {
       $fidoQuery = \Drupal::database()
         ->select('commerce_product_variation__field_id_oasis', 'fido');
@@ -220,14 +225,15 @@ class CommerceOasis extends ControllerBase {
    * @throws PluginNotFoundException
    * @throws EntityStorageException
    */
-  public function checkProduct($product, string $type = 'other') {
+  public function checkProduct($product, string $type = 'other')
+  {
     $variation = \Drupal::entityTypeManager()
       ->getStorage('commerce_product_variation')
       ->loadBySku($product->article);
     $cProduct = \Drupal::entityTypeManager()
       ->getStorage('commerce_product')
       ->loadByProperties([
-        'title' => $product->name,
+        'title'                => $product->name,
         'field_group_id_oasis' => $product->group_id,
       ]);
     $cProduct = reset($cProduct);
@@ -388,7 +394,8 @@ class CommerceOasis extends ControllerBase {
    *
    * @throws EntityStorageException
    */
-  public function editVariation($variation, $product, $type) {
+  public function editVariation($variation, $product, $type)
+  {
     $productVariation = ProductVariation::load($variation->id());
     $productVariation->setPrice(new Price($this->getCalculationPrice($product), 'RUB'));
     $productVariation->set('field_body', $product->description);
@@ -423,7 +430,8 @@ class CommerceOasis extends ControllerBase {
    *
    * @return array
    */
-  public function getStatusAndStock($product): array {
+  public function getStatusAndStock($product): array
+  {
     if ($product->rating === 5) {
       $data['status'] = TRUE;
       $data['field_stock'] = [99999];
@@ -448,15 +456,16 @@ class CommerceOasis extends ControllerBase {
    * @throws PluginNotFoundException
    * @throws EntityStorageException
    */
-  public function addProduct($product, $variation, $type) {
+  public function addProduct($product, $variation, $type)
+  {
     $product = Product::create([
-      'type' => $type,
-      'title' => $product->name,
-      'stores' => $this->defaultStore,
-      'variations' => $variation,
-      'field_brand' => is_null($product->brand) ? '' : self::getBrand($product->brand),
+      'type'                     => $type,
+      'title'                    => $product->name,
+      'stores'                   => $this->defaultStore,
+      'variations'               => $variation,
+      'field_brand'              => is_null($product->brand) ? '' : self::getBrand($product->brand),
       'field_product_categories' => self::getCategories($product->full_categories, $this->categories),
-      'field_group_id_oasis' => $product->group_id,
+      'field_group_id_oasis'     => $product->group_id,
     ]);
     $product->save();
 
@@ -467,7 +476,8 @@ class CommerceOasis extends ControllerBase {
    * @param $variation
    * @param $product
    */
-  public function editProduct($variation, $product) {
+  public function editProduct($variation, $product)
+  {
     $product->addVariation($variation)->save();
   }
 
@@ -480,7 +490,8 @@ class CommerceOasis extends ControllerBase {
    * @throws PluginNotFoundException
    * @throws EntityStorageException
    */
-  public function getAttributeColor($data, string $type = 'other'): array {
+  public function getAttributeColor($data, string $type = 'other'): array
+  {
     $productAttributeId = \Drupal::entityTypeManager()
       ->getStorage('commerce_product_attribute_value')
       ->loadByProperties(['name' => $data['name']]);
@@ -514,7 +525,8 @@ class CommerceOasis extends ControllerBase {
    * @throws PluginNotFoundException
    * @throws EntityStorageException
    */
-  public static function getAttribute(string $value, string $attributeType): array {
+  public static function getAttribute(string $value, string $attributeType): array
+  {
     $productAttributeId = \Drupal::entityTypeManager()
       ->getStorage('commerce_product_attribute_value')
       ->loadByProperties(['name' => $value]);
@@ -522,7 +534,7 @@ class CommerceOasis extends ControllerBase {
     if (!$productAttributeId) {
       $attribute = ProductAttributeValue::create([
         'attribute' => $attributeType,
-        'name' => $value,
+        'name'      => $value,
       ]);
       $attribute->save();
       $result = [$attribute->id()];
@@ -542,7 +554,8 @@ class CommerceOasis extends ControllerBase {
    * @throws InvalidPluginDefinitionException
    * @throws PluginNotFoundException
    */
-  public static function getImages($images): array {
+  public static function getImages($images): array
+  {
     $result = [];
 
     if (is_array($images)) {
@@ -563,7 +576,7 @@ class CommerceOasis extends ControllerBase {
           } else {
             $pic = file_get_contents($itemImage->superbig, TRUE, stream_context_create([
               'http' => [
-                'ignore_errors' => TRUE,
+                'ignore_errors'   => TRUE,
                 'follow_location' => TRUE,
               ],
             ]));
@@ -591,7 +604,8 @@ class CommerceOasis extends ControllerBase {
    * @throws PluginNotFoundException
    * @throws EntityStorageException
    */
-  public static function getBrand($name): array {
+  public static function getBrand($name): array
+  {
     $vid = 'brands';
 
     $term = \Drupal::entityTypeManager()
@@ -602,14 +616,14 @@ class CommerceOasis extends ControllerBase {
       $result = [array_key_first($term)];
     } else {
       $term = Term::create([
-        'vid' => self::getVocabulary($vid),
-        'name' => $name,
-        'status' => 1,
+        'vid'         => self::getVocabulary($vid),
+        'name'        => $name,
+        'status'      => 1,
         'description' => [
-          'value' => '',
+          'value'  => '',
           'format' => 'full_html',
         ],
-        'changed' => time(),
+        'changed'     => time(),
       ]);
       $term->save();
 
@@ -630,7 +644,8 @@ class CommerceOasis extends ControllerBase {
    * @throws PluginNotFoundException
    * @throws EntityStorageException
    */
-  public static function getCategories($productCategories, $oasisCats): array {
+  public static function getCategories($productCategories, $oasisCats): array
+  {
     $idCategories = [];
 
     foreach ($productCategories as $productCategory) {
@@ -642,7 +657,7 @@ class CommerceOasis extends ControllerBase {
         foreach ($oasisCats as $oasisCatItem) {
           if ($oasisCatItem->id === $productCategory) {
 
-            $idCategories[] = (int) self::addCategory($oasisCatItem, $oasisCats);
+            $idCategories[] = (int)self::addCategory($oasisCatItem, $oasisCats);
           }
         }
       } else {
@@ -664,7 +679,8 @@ class CommerceOasis extends ControllerBase {
    * @throws PluginNotFoundException
    * @throws EntityStorageException
    */
-  public static function addCategory($category, $oasisCats) {
+  public static function addCategory($category, $oasisCats)
+  {
     $parent = 0;
 
     if (!is_null($category->parent_id)) {
@@ -684,16 +700,16 @@ class CommerceOasis extends ControllerBase {
     }
 
     $term = Term::create([
-      'vid' => self::getVocabulary('product_categories'),
-      'name' => $category->name,
-      'status' => 1,
-      'description' => [
-        'value' => '',
+      'vid'            => self::getVocabulary('product_categories'),
+      'name'           => $category->name,
+      'status'         => 1,
+      'description'    => [
+        'value'  => '',
         'format' => 'full_html',
       ],
-      'changed' => time(),
-      'depth_level' => $category->level,
-      'parent' => [$parent],
+      'changed'        => time(),
+      'depth_level'    => $category->level,
+      'parent'         => [$parent],
       'field_id_oasis' => [$category->id],
     ]);
     $term->save();
@@ -710,13 +726,14 @@ class CommerceOasis extends ControllerBase {
    * @return string
    * @throws EntityStorageException
    */
-  public static function getVocabulary($vid, string $name = ''): string {
+  public static function getVocabulary($vid, string $name = ''): string
+  {
     $vocabularies = Vocabulary::loadMultiple();
     if (!isset($vocabularies[$vid])) {
       $vocabulary = Vocabulary::create([
-        'vid' => $vid,
+        'vid'         => $vid,
         'description' => '',
-        'name' => $name ? $name : $vid,
+        'name'        => $name ? $name : $vid,
       ]);
       $vocabulary->save();
     }
@@ -779,7 +796,8 @@ class CommerceOasis extends ControllerBase {
   /**
    * @return array
    */
-  public static function getOasisMainCategories(): array {
+  public static function getOasisMainCategories(): array
+  {
     $result = [];
     $categories = self::getOasisCategories();
 
@@ -796,7 +814,8 @@ class CommerceOasis extends ControllerBase {
    * @param false $cli
    * @return array|false
    */
-  public static function getOasisCategories($cli = false): array {
+  public static function getOasisCategories($cli = false): array
+  {
     return self::curlQuery('v4/', 'categories', ['fields' => 'id,parent_id,root,level,slug,name,path'], $cli);
   }
 
@@ -804,29 +823,26 @@ class CommerceOasis extends ControllerBase {
    * @param $cli
    * @return array|false
    */
-  public static function getOasisStock($cli): array {
+  public static function getOasisStock($cli): array
+  {
     return self::curlQuery('v4/', 'stock', ['fields' => 'id,stock'], $cli);
   }
 
   /**
    * @return array
    */
-  public static function getOasisCurrency(): array {
-    $arrCurr = [];
+  public static function getOasisCurrency(): array
+  {
+    $result = [];
     $currencies = self::curlQuery('v4/', 'currencies');
-    $ruble = [];
 
     if ($currencies) {
       foreach ($currencies as $currency) {
-        if ($currency->code === 'rub') {
-          $ruble[$currency->code] = $currency->full_name;
-        } else {
-          $arrCurr[$currency->code] = $currency->full_name;
-        }
+        $result[$currency->code] = $currency->full_name;
       }
     }
 
-    return $ruble + $arrCurr;
+    return $result;
   }
 
   /**
@@ -838,10 +854,11 @@ class CommerceOasis extends ControllerBase {
    *
    * @since 1.0
    */
-  public static function curlQuery($version, $type, array $args = [], $cli = false) {
+  public static function curlQuery($version, $type, array $args = [], $cli = false)
+  {
     $config = \Drupal::config('commerce_oasis.settings');
     $args_pref = [
-      'key' => $config->get('oasis_api_key'),
+      'key'    => $config->get('oasis_api_key'),
       'format' => 'json',
     ];
     $args = array_merge($args_pref, $args);
@@ -863,7 +880,7 @@ class CommerceOasis extends ControllerBase {
       }
     } catch (\Exception $exception) {
       echo $exception->getMessage();
-        die();
+      die();
     }
 
     return $result;
@@ -874,7 +891,8 @@ class CommerceOasis extends ControllerBase {
    *
    * @return false|string
    */
-  public static function getHexColor(string $color) {
+  public static function getHexColor(string $color)
+  {
     $colors = [
       1470 => [
         'белый прозрачный',
@@ -1074,7 +1092,8 @@ class CommerceOasis extends ControllerBase {
    *
    * @return string
    */
-  public static function parentColor(int $color_id): string {
+  public static function parentColor(int $color_id): string
+  {
     $colors = [
       1470 => '#EFEFEF',
       1471 => '#000000',
@@ -1109,7 +1128,8 @@ class CommerceOasis extends ControllerBase {
    *
    * @return string
    */
-  public function secToHis($secs) {
+  public function secToHis($secs)
+  {
     $res = [];
     $res['hours'] = floor($secs / 3600);
     $secs = $secs % 3600;

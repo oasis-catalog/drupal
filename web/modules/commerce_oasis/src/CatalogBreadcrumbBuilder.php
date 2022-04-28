@@ -16,7 +16,8 @@ use Symfony\Component\HttpFoundation\RequestStack;
 /**
  * Builds a catalog breadcrumb.
  */
-class CatalogBreadcrumbBuilder implements BreadcrumbBuilderInterface {
+class CatalogBreadcrumbBuilder implements BreadcrumbBuilderInterface
+{
 
   use StringTranslationTrait;
 
@@ -51,7 +52,8 @@ class CatalogBreadcrumbBuilder implements BreadcrumbBuilderInterface {
    * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entity_type_manager
    *   The entity storage.
    */
-  public function __construct(RequestStack $request_stack, TitleResolverInterface $title_resolver, EntityTypeManagerInterface $entity_type_manager) {
+  public function __construct(RequestStack $request_stack, TitleResolverInterface $title_resolver, EntityTypeManagerInterface $entity_type_manager)
+  {
     $this->requestStack = $request_stack;
     $this->titleResolver = $title_resolver;
     $this->entityTypeManager = $entity_type_manager;
@@ -60,14 +62,16 @@ class CatalogBreadcrumbBuilder implements BreadcrumbBuilderInterface {
   /**
    * {@inheritdoc}
    */
-  public function applies(RouteMatchInterface $route_match) {
+  public function applies(RouteMatchInterface $route_match)
+  {
     return $route_match->getRouteName() == 'view.product_catalog.page_1' && $route_match->getParameter('facets_query');
   }
 
   /**
    * {@inheritdoc}
    */
-  public function build(RouteMatchInterface $route_match) {
+  public function build(RouteMatchInterface $route_match)
+  {
     $breadcrumb = new Breadcrumb();
     $breadcrumb->addCacheContexts(['route']);
 

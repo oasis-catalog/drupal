@@ -8,7 +8,8 @@ use Drupal\commerce_oasis\Controller\CommerceOasis;
 /**
  * A Drush command file
  */
-class BatchCommands extends DrushCommands {
+class BatchCommands extends DrushCommands
+{
 
   /**
    * Run file cron import products or update quantity
@@ -19,7 +20,8 @@ class BatchCommands extends DrushCommands {
    *
    * @usage oasis --stock
    */
-  public function doExecute($option = ['stock' => FALSE]) {
+  public function doExecute($option = ['stock' => FALSE])
+  {
     $oasis = new CommerceOasis();
     $oasis->doExecuteImport($option['stock'], true);
   }
