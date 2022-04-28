@@ -88,11 +88,9 @@ class CommerceOasis extends ControllerBase {
 
   /**
    * @param bool $upStock
-   * @throws InvalidPluginDefinitionException
-   * @throws PluginNotFoundException
-   * @throws EntityStorageException
+   * @param false $cli
    */
-  public function doExecuteImport(bool $upStock)
+  public function doExecuteImport(bool $upStock, $cli = false)
   {
     set_time_limit(0);
     ini_set('memory_limit', '3G');
@@ -103,7 +101,7 @@ class CommerceOasis extends ControllerBase {
       $start_time = microtime(TRUE);
 
       if ($upStock) {
-        $stock = CommerceOasis::getOasisStock();
+        $stock = self::getOasisStock($cli);
         if ($stock) {
           $this->upStock($stock);
         }
@@ -122,7 +120,7 @@ class CommerceOasis extends ControllerBase {
           $args['offset'] = $step * $limit;
         }
 
-        $this->categories = CommerceOasis::getOasisCategories();
+        $this->categories = self::getOasisCategories($cli);
         $this->products = $this->getOasisProducts($args);
 
         foreach ($this->products as $product) {
@@ -143,7 +141,8 @@ class CommerceOasis extends ControllerBase {
 
       \Drupal::logger('commerce_oasis')
         ->notice('End process. ' . 'Время обработки: ' . $this->secToHis($end_time - $start_time));
-    } catch (Exception $e) {
+    } catch (\Exception $e) {
+      echo $e->getMessage();
     }
   }
 
@@ -306,12 +305,12 @@ class CommerceOasis extends ControllerBase {
     $attribute_name = 'attribute_color';
 
     if ($type === 'clothing') {
-      $attr['attribute_size'] = CommerceOasis::getAttribute($product->size, 'size');
+      $attr['attribute_size'] = self::getAttribute($product->size, 'size');
       foreach ($product->attributes as $attribute) {
         if (isset($attribute->id) && $attribute->id === 1000000001) {
           $attributeColor = explode('/', str_replace(',', '/', $attribute->value));
           foreach ($attributeColor as $attributeColorItem) {
-            $needed = CommerceOasis::getHexColor(trim($attributeColorItem));
+            $needed = self::getHexColor(trim($attributeColorItem));
             if ($needed) {
               $color = [
                 'name'  => trim($attributeColorItem),
@@ -329,11 +328,11 @@ class CommerceOasis extends ControllerBase {
         $attr[$attribute_name] = $this->getAttributeColor($color, $type);
       } else {
         foreach ($product->colors as $colorItem) {
-          $needed = CommerceOasis::parentColor($colorItem->parent_id);
+          $needed = self::parentColor($colorItem->parent_id);
           if ($needed) {
             $color = [
               'name'  => trim($colorItem->name),
-              'value' => CommerceOasis::parentColor($colorItem->parent_id),
+              'value' => self::parentColor($colorItem->parent_id),
             ];
             $attr[$attribute_name] = $this->getAttributeColor($color, $type);
             break;
@@ -370,10 +369,10 @@ class CommerceOasis extends ControllerBase {
           return $item->target_id;
         }, iterator_to_array($cVariation->get('field_images')));
       } else {
-        $attr['field_images'] = CommerceOasis::getImages($product->images);
+        $attr['field_images'] = self::getImages($product->images);
       }
     } else {
-      $attr['field_images'] = CommerceOasis::getImages($product->images);
+      $attr['field_images'] = self::getImages($product->images);
     }
 
     $variation = ProductVariation::create($attr);
@@ -455,8 +454,8 @@ class CommerceOasis extends ControllerBase {
       'title' => $product->name,
       'stores' => $this->defaultStore,
       'variations' => $variation,
-      'field_brand' => is_null($product->brand) ? '' : CommerceOasis::getBrand($product->brand),
-      'field_product_categories' => CommerceOasis::getCategories($product->full_categories, $this->categories),
+      'field_brand' => is_null($product->brand) ? '' : self::getBrand($product->brand),
+      'field_product_categories' => self::getCategories($product->full_categories, $this->categories),
       'field_group_id_oasis' => $product->group_id,
     ]);
     $product->save();
@@ -603,7 +602,7 @@ class CommerceOasis extends ControllerBase {
       $result = [array_key_first($term)];
     } else {
       $term = Term::create([
-        'vid' => CommerceOasis::getVocabulary($vid),
+        'vid' => self::getVocabulary($vid),
         'name' => $name,
         'status' => 1,
         'description' => [
@@ -643,7 +642,7 @@ class CommerceOasis extends ControllerBase {
         foreach ($oasisCats as $oasisCatItem) {
           if ($oasisCatItem->id === $productCategory) {
 
-            $idCategories[] = (int) CommerceOasis::addCategory($oasisCatItem, $oasisCats);
+            $idCategories[] = (int) self::addCategory($oasisCatItem, $oasisCats);
           }
         }
       } else {
@@ -676,7 +675,7 @@ class CommerceOasis extends ControllerBase {
       if (!$parent) {
         foreach ($oasisCats as $oasisCat) {
           if ($oasisCat->id === $category->parent_id) {
-            $parent = CommerceOasis::addCategory($oasisCat, $oasisCats);
+            $parent = self::addCategory($oasisCat, $oasisCats);
           }
         }
       } else {
@@ -685,7 +684,7 @@ class CommerceOasis extends ControllerBase {
     }
 
     $term = Term::create([
-      'vid' => CommerceOasis::getVocabulary('product_categories'),
+      'vid' => self::getVocabulary('product_categories'),
       'name' => $category->name,
       'status' => 1,
       'description' => [
@@ -758,10 +757,10 @@ class CommerceOasis extends ControllerBase {
       }
 
       if (!count($categoryIds)) {
-        $categoryIds = array_keys(CommerceOasis::getOasisMainCategories());
+        $categoryIds = array_keys(self::getOasisMainCategories());
       }
     } else {
-      $categoryIds = array_keys(CommerceOasis::getOasisMainCategories());
+      $categoryIds = array_keys(self::getOasisMainCategories());
     }
 
     $data['category'] = implode(',', $categoryIds);
@@ -774,7 +773,7 @@ class CommerceOasis extends ControllerBase {
       }
     }
 
-    return CommerceOasis::curlQuery('v4/', 'products', $args);
+    return self::curlQuery('v4/', 'products', $args);
   }
 
   /**
@@ -782,7 +781,7 @@ class CommerceOasis extends ControllerBase {
    */
   public static function getOasisMainCategories(): array {
     $result = [];
-    $categories = CommerceOasis::getOasisCategories();
+    $categories = self::getOasisCategories();
 
     foreach ($categories as $category) {
       if ($category->level === 1) {
@@ -794,17 +793,19 @@ class CommerceOasis extends ControllerBase {
   }
 
   /**
-   * @return array
+   * @param false $cli
+   * @return array|false
    */
-  public static function getOasisCategories(): array {
-    return CommerceOasis::curlQuery('v4/', 'categories', ['fields' => 'id,parent_id,root,level,slug,name,path']);
+  public static function getOasisCategories($cli = false): array {
+    return self::curlQuery('v4/', 'categories', ['fields' => 'id,parent_id,root,level,slug,name,path'], $cli);
   }
 
   /**
+   * @param $cli
    * @return array|false
    */
-  public static function getOasisStock(): array {
-    return CommerceOasis::curlQuery('v4/', 'stock', ['fields' => 'id,stock']);
+  public static function getOasisStock($cli): array {
+    return self::curlQuery('v4/', 'stock', ['fields' => 'id,stock'], $cli);
   }
 
   /**
@@ -812,7 +813,7 @@ class CommerceOasis extends ControllerBase {
    */
   public static function getOasisCurrency(): array {
     $arrCurr = [];
-    $currencies = CommerceOasis::curlQuery('v4/', 'currencies');
+    $currencies = self::curlQuery('v4/', 'currencies');
     $ruble = [];
 
     if ($currencies) {
@@ -832,12 +833,12 @@ class CommerceOasis extends ControllerBase {
    * @param       $version
    * @param       $type
    * @param array $args
-   *
+   * @param bool $cli
    * @return false|mixed
    *
    * @since 1.0
    */
-  public static function curlQuery($version, $type, array $args = []) {
+  public static function curlQuery($version, $type, array $args = [], $cli = false) {
     $config = \Drupal::config('commerce_oasis.settings');
     $args_pref = [
       'key' => $config->get('oasis_api_key'),
@@ -845,14 +846,27 @@ class CommerceOasis extends ControllerBase {
     ];
     $args = array_merge($args_pref, $args);
 
-    $ch = curl_init();
-    curl_setopt($ch, CURLOPT_URL, 'https://api.oasiscatalog.com/' . $version . $type . '?' . http_build_query($args));
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
-    $result = json_decode(curl_exec($ch));
-    $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-    curl_close($ch);
+    try {
+      $ch = curl_init();
+      curl_setopt($ch, CURLOPT_URL, 'https://api.oasiscatalog.com/' . $version . $type . '?' . http_build_query($args));
+      curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
+      $result = json_decode(curl_exec($ch));
+      $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+      curl_close($ch);
 
-    return $http_code === 200 ? $result : FALSE;
+      if ($cli && $http_code !== 200) {
+        if ($http_code === 401) {
+          throw new \Exception('Error Unauthorized. Invalid API key!');
+        } else {
+          throw new \Exception('Error. Code: ' . $http_code);
+        }
+      }
+    } catch (\Exception $exception) {
+      echo $exception->getMessage();
+        die();
+    }
+
+    return $result;
   }
 
   /**
@@ -1047,7 +1061,7 @@ class CommerceOasis extends ControllerBase {
     foreach ($colors as $key => $value) {
       foreach ($value as $itemColor) {
         if (trim($itemColor) === $color) {
-          return CommerceOasis::parentColor($key);
+          return self::parentColor($key);
         }
       }
     }

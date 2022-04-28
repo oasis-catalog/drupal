@@ -21,7 +21,7 @@ class BatchCommands extends DrushCommands {
    */
   public function doExecute($option = ['stock' => FALSE]) {
     $oasis = new CommerceOasis();
-    $oasis->doExecuteImport($option['stock']);
+    $oasis->doExecuteImport($option['stock'], true);
   }
 
 }
