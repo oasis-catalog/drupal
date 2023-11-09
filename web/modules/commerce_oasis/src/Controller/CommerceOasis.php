@@ -310,7 +310,7 @@ class CommerceOasis extends ControllerBase
 
     $attribute_name = 'attribute_color';
 
-    if ($type === 'clothing') {
+    if ($type === 'clothing' && !empty($product->size)) {
       $attr['attribute_size'] = self::getAttribute($product->size, 'size');
       foreach ($product->attributes as $attribute) {
         if (isset($attribute->id) && $attribute->id === 1000000001) {
